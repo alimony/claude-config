@@ -11,7 +11,7 @@ Read every page of a documentation website and create Claude Code skills that te
 
 **Documentation URL**: $ARGUMENTS
 
-If no URL was provided, ask the user for one. The URL should be the root of a documentation site (e.g., `https://docs.djangoproject.com/en/stable/`, `https://htmx.org/docs/`).
+If no URL was provided, ask the user for one. The URL should be the root of a documentation site (e.g., `https://docs.djangoproject.com/en/stable/`, `https://docs.djangoproject.com/en/6.0/`, `https://htmx.org/docs/`).
 
 ## Phase 1: Discovery — Map the Documentation
 
@@ -19,14 +19,23 @@ If no URL was provided, ask the user for one. The URL should be the root of a do
 
 Fetch the base URL with WebFetch. From the page content, determine:
 - **Project name** (e.g., "django", "htmx", "react") — this becomes the skill namespace
-- **Version** (use latest/stable if available)
+- **Version** — extract from the URL or page content (see below)
 - **Documentation structure type** (single page, multi-page with sidebar, API reference, tutorial-based, etc.)
 
-Create a slug from the project name (lowercase, hyphens). This is `{project}` in all paths below.
+**Version detection:** Many documentation sites encode the version in the URL path (e.g., `/en/6.0/`, `/v3/`, `/2.x/`). When the URL contains a specific version:
+- Extract it from the URL path segment (e.g., `https://docs.djangoproject.com/en/6.0/` → version `6.0`)
+- Include the version in the project slug: `{name}-{version}` (e.g., `django-6.0`)
+- This allows multiple versions to coexist as separate skill sets
+
+When the URL uses `stable`, `latest`, or has no version indicator, omit the version from the slug (e.g., just `django`).
+
+Create a slug from the project name and optional version (lowercase, hyphens). This is `{project}` in all paths below. Record the **base path prefix** from the input URL (e.g., `/en/6.0/`) — this is used in Phase 1.2 to scope discovery.
 
 ### 1.2 Find All Documentation Pages
 
 Try these strategies in order until one yields a comprehensive page list:
+
+**URL scoping:** All strategies below must filter discovered URLs to stay within the **base path prefix** identified in Phase 1.1. For example, if the input URL is `https://docs.djangoproject.com/en/6.0/`, only include URLs whose path starts with `/en/6.0/`. This prevents pulling in pages from other versions (e.g., `/en/5.1/`) or unrelated sections of the site.
 
 **Strategy A — Sitemap:**
 ```
@@ -34,7 +43,7 @@ Try these strategies in order until one yields a comprehensive page list:
 {base_url}/../sitemap.xml
 {domain}/sitemap.xml
 ```
-Fetch with WebFetch. Parse all `<loc>` URLs. Filter to documentation pages only (exclude blog, changelog, marketing pages).
+Fetch with WebFetch. Parse all `<loc>` URLs. Filter to documentation pages within the base path prefix (exclude blog, changelog, marketing pages, and other versions).
 
 **Strategy B — Table of Contents / Navigation:**
 Fetch the base URL. Look for a table of contents, sidebar navigation, or "all topics" page. Follow those links to build the full page list. Many doc sites have an index or contents page — check for links like:
@@ -42,7 +51,7 @@ Fetch the base URL. Look for a table of contents, sidebar navigation, or "all to
 - Sidebar navigation with nested sections
 
 **Strategy C — Crawl from base:**
-If A and B fail, start from the base URL and extract all internal links. Follow links one level deep to discover the full documentation tree. Deduplicate by URL.
+If A and B fail, start from the base URL and extract all internal links that stay within the base path prefix. Follow links one level deep to discover the full documentation tree. Deduplicate by URL.
 
 ### 1.3 Present the Map to the User
 
