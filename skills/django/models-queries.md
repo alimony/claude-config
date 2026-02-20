@@ -1,4 +1,6 @@
-# Django 6.0 — Models & Queries
+# Django: Models & Queries
+
+Based on Django 6.0 documentation.
 
 ## Core Concepts
 

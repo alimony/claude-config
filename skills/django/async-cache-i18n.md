@@ -1,4 +1,6 @@
-# Django 6.0: Async, Caching, i18n, and Cross-Cutting Concerns
+# Django: Async, Caching, i18n, and Cross-Cutting Concerns
+
+Based on Django 6.0 documentation.
 
 ## Async Support
 

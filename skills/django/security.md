@@ -1,4 +1,6 @@
-# Django 6.0 Security
+# Django: Security
+
+Based on Django 6.0 documentation.
 
 ## CSRF Protection
 

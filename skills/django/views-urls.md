@@ -1,4 +1,6 @@
-# Django 6.0: Views & URL Configuration
+# Django: Views & URL Configuration
+
+Based on Django 6.0 documentation.
 
 ## Core Concepts
 

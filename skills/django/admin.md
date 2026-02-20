@@ -1,4 +1,6 @@
-# Django 6.0 Admin Site
+# Django: Admin Site
+
+Based on Django 6.0 documentation.
 
 The admin is Django's auto-generated interface for model CRUD. It is designed for internal/staff use, not as a public-facing frontend.
 

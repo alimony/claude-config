@@ -1,4 +1,6 @@
-# Django 6.0 Class-Based Views
+# Django: Class-Based Views
+
+Based on Django 6.0 documentation.
 
 ## Core Concepts
 

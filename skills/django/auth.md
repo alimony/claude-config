@@ -1,4 +1,6 @@
-# Django 6.0 Authentication
+# Django: Authentication
+
+Based on Django 6.0 documentation.
 
 ## Core Concepts
 

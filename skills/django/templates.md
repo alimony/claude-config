@@ -1,4 +1,6 @@
-# Django 6.0 Templates
+# Django: Templates
+
+Based on Django 6.0 documentation.
 
 ## Core Concepts
 

@@ -1,4 +1,6 @@
-# Django 6.0 — Models & Fields
+# Django: Models & Fields
+
+Based on Django 6.0 documentation.
 
 ## Core Concepts
 

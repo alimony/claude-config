@@ -1,4 +1,6 @@
-# Django 6.0: Deployment & File Handling
+# Django: Deployment & File Handling
+
+Based on Django 6.0 documentation.
 
 ## Deployment Overview
 

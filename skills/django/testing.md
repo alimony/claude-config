@@ -1,4 +1,6 @@
-# Django 6.0 Testing
+# Django: Testing
+
+Based on Django 6.0 documentation.
 
 ## Core Concepts
 

@@ -1,4 +1,6 @@
-# Django 6.0 Forms
+# Django: Forms
+
+Based on Django 6.0 documentation.
 
 ## Core Concepts
 

@@ -1,5 +1,6 @@
-# Django 6.0 Skills
+# Django Skills
 
+Based on Django 6.0 documentation.
 Generated from https://docs.djangoproject.com/en/6.0/ on 2026-02-20.
 
 ## Available Skills

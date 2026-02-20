@@ -1,4 +1,6 @@
-# Django 6.0 -- Settings & Management
+# Django: Settings & Management
+
+Based on Django 6.0 documentation.
 
 ## Settings Fundamentals
 
