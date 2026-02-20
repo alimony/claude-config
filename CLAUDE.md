@@ -4,7 +4,7 @@ General-purpose engineering principles. Project-specific CLAUDE.md files add to 
 
 ## Skills
 
-@~/.claude/skills/django-6.0/index.md
+@~/.claude/skills/django/index.md
 
 ## How I Work
 
