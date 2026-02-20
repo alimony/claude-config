@@ -2,6 +2,10 @@
 
 General-purpose engineering principles. Project-specific CLAUDE.md files add to or override these.
 
+## Skills
+
+@~/.claude/skills/django-6.0/index.md
+
 ## How I Work
 
 - **Read before writing.** Understand existing code before changing it. Codebase conventions trump personal preference.
