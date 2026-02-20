@@ -24,12 +24,11 @@ Fetch the base URL with WebFetch. From the page content, determine:
 
 **Version detection:** Many documentation sites encode the version in the URL path (e.g., `/en/6.0/`, `/v3/`, `/2.x/`). When the URL contains a specific version:
 - Extract it from the URL path segment (e.g., `https://docs.djangoproject.com/en/6.0/` → version `6.0`)
-- Include the version in the project slug: `{name}-{version}` (e.g., `django-6.0`)
-- This allows multiple versions to coexist as separate skill sets
+- Record the version as metadata — it will be noted inside skill files but does **not** affect the folder name
 
-When the URL uses `stable`, `latest`, or has no version indicator, omit the version from the slug (e.g., just `django`).
+The folder name is always just the project name (e.g., `django`, `htmx`, `react`) — never versioned. Skills represent your current knowledge of the project. When re-running against a newer version, the existing skills are updated in place.
 
-Create a slug from the project name and optional version (lowercase, hyphens). This is `{project}` in all paths below. Record the **base path prefix** from the input URL (e.g., `/en/6.0/`) — this is used in Phase 1.2 to scope discovery.
+Create a slug from the project name only (lowercase, hyphens, no version). This is `{project}` in all paths below. Record the **base path prefix** from the input URL (e.g., `/en/6.0/`) — this is used in Phase 1.2 to scope discovery. Record the **detected version** (e.g., `6.0`) separately as `{version}` for use in skill file content.
 
 ### 1.2 Find All Documentation Pages
 
@@ -103,6 +102,7 @@ Each agent receives:
 
 ```
 You are reading documentation pages for the "{project}" project, specifically the "{topic}" section.
+The documentation version is {version} (from {base_url}).
 
 Read each of these URLs using WebFetch and synthesize them into a single, practical skill file.
 
@@ -110,6 +110,9 @@ URLs to read:
 {url_list}
 
 Create a skill file at: ~/.claude/skills/{project}/{topic}.md
+
+Start the file with a header like: `# {Project Name}: {Topic Title}`
+On the next line, add: `Based on {Project Name} {version} documentation.`
 
 ## What to Include
 
@@ -165,6 +168,7 @@ After all agents complete, create `~/.claude/skills/{project}/index.md`:
 ```markdown
 # {Project Name} Skills
 
+Based on {Project Name} {version} documentation.
 Generated from {base_url} on {date}.
 
 ## Available Skills
@@ -223,6 +227,6 @@ Each agent can reasonably read ~15-20 documentation pages and synthesize them. I
 
 ### Idempotent
 If skills already exist for this project in `~/.claude/skills/{project}/`, ask the user whether to:
-- **Overwrite** — Replace all existing skills
+- **Overwrite** — Replace all existing skills (recommended when updating to a newer version)
 - **Merge** — Only create missing skills, skip existing ones
 - **Cancel** — Don't proceed
