@@ -7,6 +7,7 @@ General-purpose engineering principles. Project-specific CLAUDE.md files add to 
 @~/.claude/skills/django/index.md
 @~/.claude/skills/htmx/index.md
 @~/.claude/skills/react/index.md
+@~/.claude/skills/pytest/index.md
 
 ## How I Work
 
