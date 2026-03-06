@@ -10,6 +10,7 @@ General-purpose engineering principles. Project-specific CLAUDE.md files add to 
 @~/.claude/skills/pytest/index.md
 @~/.claude/skills/strawberry/index.md
 @~/.claude/skills/celery/index.md
+@~/.claude/skills/vercel/index.md
 
 ## How I Work
 
