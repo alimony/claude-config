@@ -4,14 +4,14 @@ Version-controlled [Claude Code](https://docs.anthropic.com/en/docs/claude-code)
 
 ## What's included
 
-| File | Purpose |
+| Path | Purpose |
 |---|---|
-| `CLAUDE.md` | Global instructions that apply to all projects -- engineering principles, coding standards, and workflow preferences |
+| `CLAUDE.md` | Global instructions that apply to all projects — engineering principles, coding standards, and workflow preferences |
 | `settings.json` | Claude Code settings (effort level, statusline config) |
 | `statusline-command.sh` | Custom statusline showing model, directory, git branch/status, context usage, and token counts |
+| `commands/` | Slash commands (e.g. `/i-know-kung-fu` to generate skills from documentation sites) |
+| `skills/` | Documentation-derived skill files for Django, htmx, React, pytest, Strawberry, Celery, Vercel, and Pandoc |
 | `install.sh` | Installer that symlinks everything into `~/.claude/` |
-
-The installer also supports optional `commands/`, `skills/`, and `agents/` directories if you add them later.
 
 ## Setup
 
