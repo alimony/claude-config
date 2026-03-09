@@ -13,6 +13,7 @@ General-purpose engineering principles. Project-specific CLAUDE.md files add to 
 @~/.claude/skills/vercel/index.md
 @~/.claude/skills/pandoc/index.md
 @~/.claude/skills/sentry/index.md
+@~/.claude/skills/hackerone/index.md
 
 ## How I Work
 
