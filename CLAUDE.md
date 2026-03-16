@@ -14,6 +14,7 @@ General-purpose engineering principles. Project-specific CLAUDE.md files add to 
 @~/.claude/skills/pandoc/index.md
 @~/.claude/skills/sentry/index.md
 @~/.claude/skills/hackerone/index.md
+@~/.claude/skills/linearis/index.md
 
 ## How I Work
 
