@@ -79,24 +79,36 @@ Analyze the URL structure and page titles to group pages into coherent topics. E
 
 ### 2.2 Plan the Output
 
-Output directory: `~/.claude/skills/{project}/`
+Staging directory (where agents write): `/tmp/claude-skills-{project}/`
+Final directory: `~/.claude/skills/{project}/`
 
 Files to create:
-- `~/.claude/skills/{project}/index.md` — Master index listing all skills
-- `~/.claude/skills/{project}/{topic}.md` — One per topic group
+- `{topic}.md` — One per topic group (agents write these to staging)
+- `index.md` — Master index (main agent creates this in the final directory)
 
 Present the planned structure to the user and get approval.
 
 ## Phase 3: Read & Synthesize — The Heavy Lifting
 
+### 3.0 Prepare Staging Directory
+
+Before launching agents, create the staging directory:
+
+```bash
+mkdir -p /tmp/claude-skills-{project}
+```
+
 ### 3.1 Launch Parallel Agents
 
-For each topic group, launch a background `general-purpose` agent using the Task tool. **Launch as many as possible in parallel** (6-10 agents at a time).
+For each topic group, launch a background `general-purpose` agent using the Agent tool. **Launch as many as possible in parallel** (6-10 agents at a time).
 
 Each agent receives:
 - The list of URLs to read for its topic
 - The project name and topic name
 - Instructions on what to extract and how to format the skill file
+- **The staging path to write to** (`/tmp/claude-skills-{project}/{topic}.md`)
+
+**IMPORTANT — Staging directory for writes:** Agents write to `/tmp/claude-skills-{project}/` (not to `~/.claude/skills/`). This avoids permission issues with subagents writing to the home directory. The main agent copies files to the final location after all agents complete.
 
 **Agent prompt template:**
 
@@ -109,7 +121,8 @@ Read each of these URLs using WebFetch and synthesize them into a single, practi
 URLs to read:
 {url_list}
 
-Create a skill file at: ~/.claude/skills/{project}/{topic}.md
+IMPORTANT: Write the file to the STAGING directory, not the final location.
+Create the skill file at: /tmp/claude-skills-{project}/{topic}.md
 
 Start the file with a header like: `# {Project Name}: {Topic Title}`
 On the next line, add: `Based on {Project Name} {version} documentation.`
@@ -150,7 +163,7 @@ After creating the file, report back what you covered and any pages that had err
 
 ### 3.2 Monitor Progress
 
-After launching all agents, wait for them to complete. Use TaskOutput to check on background agents periodically. Report progress to the user as agents finish.
+After launching all agents, wait for them to complete. Report progress to the user as agents finish.
 
 ### 3.3 Handle Failures
 
@@ -161,9 +174,20 @@ If an agent fails or a URL is inaccessible:
 
 ## Phase 4: Index & Wire Up
 
-### 4.1 Create the Master Index
+### 4.1 Copy Staged Files to Final Location
 
-After all agents complete, create `~/.claude/skills/{project}/index.md`:
+After all agents complete, copy the staged files to the final directory:
+
+```bash
+mkdir -p ~/.claude/skills/{project}
+cp /tmp/claude-skills-{project}/*.md ~/.claude/skills/{project}/
+```
+
+Verify all expected files are present with `ls -la ~/.claude/skills/{project}/` and `wc -l ~/.claude/skills/{project}/*.md`.
+
+### 4.2 Create the Master Index
+
+Create `~/.claude/skills/{project}/index.md` (the main agent writes this directly — not an agent):
 
 ```markdown
 # {Project Name} Skills
@@ -173,9 +197,9 @@ Generated from {base_url} on {date}.
 
 ## Available Skills
 
-| Skill | Topics Covered | Source Pages |
-|-------|---------------|--------------|
-| [{topic}](./{topic}.md) | Brief description | N pages |
+| Skill | Topics Covered | Lines |
+|-------|---------------|-------|
+| [{topic}](./{topic}.md) | Brief description | N |
 | ... | ... | ... |
 
 ## How to Use
@@ -190,12 +214,13 @@ Or reference this index to see all available skills:
 
 ## Coverage
 
-- Total documentation pages: {N}
-- Pages read: {M}
+- Total documentation pages read: {N}
+- Skill files created: {M}
+- Total lines: {L}
 - Pages failed: {F} (list if any)
 ```
 
-### 4.2 Review the Output
+### 4.3 Review the Output
 
 Read each created skill file to verify quality. Check for:
 - Files that are too short (agent may have failed to read pages)
@@ -207,12 +232,17 @@ Present a summary to the user:
 - Note any gaps or quality issues
 - Suggest how to reference them in their projects
 
-### 4.3 Offer to Wire Up
+### 4.4 Clean Up Staging
 
-Ask the user if they want to:
-1. **Add to current project** — Add `@~/.claude/skills/{project}/index.md` to the project CLAUDE.md
-2. **Add to global config** — Add reference to `~/.claude/CLAUDE.md`
-3. **Leave standalone** — Just have the files available for manual reference
+```bash
+rm -rf /tmp/claude-skills-{project}
+```
+
+### 4.5 Offer to Wire Up
+
+Ask the user if they want to add `{project}` to the available skills listing in `~/.claude/CLAUDE.md`. The listing is a plain-text line — skills are NOT auto-loaded via `@` references in the global config (that would waste context on every session). Instead, individual projects reference specific skills they need in their own CLAUDE.md files.
+
+Check `~/.claude/CLAUDE.md` for the existing skills listing (looks like `Available libraries: django, htmx, ...`) and append the new project name to it.
 
 ## Guidelines
 

@@ -4,6 +4,8 @@ General-purpose engineering principles. Project-specific CLAUDE.md files add to 
 
 ## Skills
 
+Skill indexes are always loaded so you know what's available. When working on a task that matches a skill topic, read the relevant `{topic}.md` file for detailed guidance — don't ask, just load it.
+
 @~/.claude/skills/django/index.md
 @~/.claude/skills/htmx/index.md
 @~/.claude/skills/react/index.md
