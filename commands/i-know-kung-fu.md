@@ -242,7 +242,7 @@ rm -rf /tmp/claude-skills-{project}
 
 Ask the user if they want to add `{project}` to the available skills listing in `~/.claude/CLAUDE.md`. The listing is a plain-text line — skills are NOT auto-loaded via `@` references in the global config (that would waste context on every session). Instead, individual projects reference specific skills they need in their own CLAUDE.md files.
 
-Check `~/.claude/CLAUDE.md` for the existing skills listing (looks like `Available libraries: django, htmx, ...`) and append the new project name to it.
+Check `~/.claude/CLAUDE.md` for the existing skills listing (looks like `Available: django, htmx, ...`) and append the new project name to it.
 
 ## Guidelines
 
