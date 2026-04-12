@@ -3,5 +3,10 @@
     "type": "command",
     "command": "bash ~/.claude/statusline-command.sh"
   },
-  "effortLevel": "high"
+  "effortLevel": "high",
+  "permissions": {
+    "allow": [
+      "Bash(python3 ~/.claude/scripts/pacing.py*)"
+    ]
+  }
 }
