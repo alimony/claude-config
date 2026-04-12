@@ -6,7 +6,7 @@
   "effortLevel": "high",
   "permissions": {
     "allow": [
-      "Bash(python3 ~/.claude/scripts/pacing.py*)"
+      "Bash(*pacing.py*)"
     ]
   }
 }
