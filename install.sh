@@ -15,6 +15,7 @@ FILES=(
 DIRS=(
     "commands"
     "skills"
+    "scripts"
     "agents"
 )
 
