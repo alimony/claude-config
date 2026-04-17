@@ -35,7 +35,6 @@ def parse_sections(text):
         pct = re.search(r'(\d+)%\s*used', s)
         if pct:
             cur['pct'] = int(pct.group(1))
-            continue
         reset = re.search(r'Resets\s+(.+?)\s*\(([^)]+)\)', s)
         if reset:
             cur['reset_text'] = reset.group(1).strip()
@@ -43,6 +42,7 @@ def parse_sections(text):
             spend = re.search(r'\$([\d.]+)\s*/\s*\$([\d.]+)\s*spent', s)
             if spend:
                 cur['spend'] = (float(spend.group(1)), float(spend.group(2)))
+        if pct or reset:
             continue
         if not any(c in s for c in '\u2588\u258c\u258f\u258e\u258d\u258b\u258a\u2589$'):
             if cur.get('label'):
