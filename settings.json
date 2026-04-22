@@ -1,9 +1,4 @@
 {
-  "permissions": {
-    "allow": [
-      "Bash(*pacing.py*)"
-    ]
-  },
   "statusLine": {
     "type": "command",
     "command": "bash ~/.claude/statusline-command.sh"
