@@ -7,6 +7,9 @@ DIR=$(echo "$input" | jq -r '.workspace.current_dir')
 PCT=$(echo "$input" | jq -r '.context_window.used_percentage // 0' | cut -d. -f1)
 INPUT_TOKENS=$(echo "$input" | jq -r '.context_window.total_input_tokens // 0')
 OUTPUT_TOKENS=$(echo "$input" | jq -r '.context_window.total_output_tokens // 0')
+WEEK_PCT=$(echo "$input" | jq -r '.rate_limits.seven_day.used_percentage // empty' | cut -d. -f1)
+WEEK_RESET=$(echo "$input" | jq -r '.rate_limits.seven_day.resets_at // empty')
+SESSION_PCT=$(echo "$input" | jq -r '.rate_limits.five_hour.used_percentage // empty' | cut -d. -f1)
 
 # Colors
 CYAN='\033[36m'
@@ -77,8 +80,40 @@ fmt_tokens() {
 IN_FMT=$(fmt_tokens "$INPUT_TOKENS")
 OUT_FMT=$(fmt_tokens "$OUTPUT_TOKENS")
 
+# Weekly quota + pacing. Delta = usage% - calendar%.
+# > 0 = over-pacing (burning faster than time); < 0 = under-pacing (banking).
+PACING=""
+if [ -n "$WEEK_PCT" ] && [ -n "$WEEK_RESET" ]; then
+    NOW=$(date +%s)
+    WEEK_SECS=604800
+    WEEK_START=$((WEEK_RESET - WEEK_SECS))
+    ELAPSED=$((NOW - WEEK_START))
+    CAL_PCT=$((ELAPSED * 100 / WEEK_SECS))
+    PACE=$((WEEK_PCT - CAL_PCT))
+    ABS=$PACE; [ "$PACE" -lt 0 ] && ABS=$((-PACE))
+
+    if [ "$PACE" -ge 10 ]; then
+        PACE_COLOR="$RED"; PACE_SYM="▲"
+    elif [ "$PACE" -ge 3 ]; then
+        PACE_COLOR="$YELLOW"; PACE_SYM="△"
+    elif [ "$PACE" -le -10 ]; then
+        PACE_COLOR="$GREEN"; PACE_SYM="▼"
+    elif [ "$PACE" -le -3 ]; then
+        PACE_COLOR="$CYAN"; PACE_SYM="▽"
+    else
+        PACE_COLOR="$DIM"; PACE_SYM="•"
+    fi
+
+    if [ "$WEEK_PCT" -ge 90 ]; then WEEK_COLOR="$RED"
+    elif [ "$WEEK_PCT" -ge 70 ]; then WEEK_COLOR="$YELLOW"
+    else WEEK_COLOR="$GREEN"; fi
+
+    PACING=" ${DIM}|${RESET} ${WEEK_COLOR}${WEEK_PCT}%w${RESET} ${PACE_COLOR}${PACE_SYM}${ABS}${RESET}"
+    [ -n "$SESSION_PCT" ] && PACING="${PACING} ${DIM}·${RESET} ${CYAN}${SESSION_PCT}%s${RESET}"
+fi
+
 # Line 1: model, directory, git
 printf '%b\n' "${CYAN}${MODEL}${RESET} ${SHORT_DIR}${GIT_INFO}"
 
-# Line 2: context bar, token counts (no trailing newline to avoid empty third line)
-printf '%b' "${BAR_COLOR}${BAR}${RESET} ${PCT}% ${DIM}|${RESET} ${CYAN}${IN_FMT}${RESET}${DIM} in${RESET} ${GREEN}${OUT_FMT}${RESET}${DIM} out${RESET}"
+# Line 2: context bar, token counts, weekly quota + pacing (no trailing newline to avoid empty third line)
+printf '%b' "${BAR_COLOR}${BAR}${RESET} ${PCT}% ${DIM}|${RESET} ${CYAN}${IN_FMT}${RESET}${DIM} in${RESET} ${GREEN}${OUT_FMT}${RESET}${DIM} out${RESET}${PACING}"
