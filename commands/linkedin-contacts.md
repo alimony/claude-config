@@ -47,7 +47,7 @@ Relay the script's summary to the user (total parsed, already in Contacts, missi
 
 **A connection is reported missing but is in Contacts.** Most likely the Contacts entry's name diverges from LinkedIn's display name (nicknames, different transliteration) and has no LinkedIn URL stored. The per-connection name predicate won't find it. Workaround: add the LinkedIn URL to the Contacts entry, or accept the false positive and skip that row at import time.
 
-**The CSV won't import directly into Contacts.app.** Contacts.app reads vCard (.vcf), tab-separated text, or LDIF — not generic CSV. If a vCard is needed instead, ask and I'll convert the CSV (one `BEGIN:VCARD … END:VCARD` block per row with `URL;type=LinkedIn:` for the profile).
+**Importing the CSV into Contacts.app.** Contacts.app imports the CSV directly: File → Import (or drag the file onto the app), then map the columns to fields in the dialog it shows. It also reads vCard (.vcf) and LDIF. If a ready-to-import vCard is preferred instead, ask and I'll convert the CSV (one `BEGIN:VCARD … END:VCARD` block per row with `URL;type=LinkedIn:` for the profile).
 
 ## Useful flags
 
