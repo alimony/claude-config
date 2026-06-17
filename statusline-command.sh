@@ -112,6 +112,66 @@ if [ -n "$WEEK_PCT" ] && [ -n "$WEEK_RESET" ]; then
     [ -n "$SESSION_PCT" ] && PACING="${PACING} ${DIM}·${RESET} ${CYAN}${SESSION_PCT}%s${RESET}"
 fi
 
+# Token-based / API / Enterprise billing has no rolling quota windows — the
+# rate_limits field is sent only for Claude.ai Pro/Max subscribers. When it's
+# absent, show month-to-date Claude Code spend (via ccusage) + this session's
+# spend, the rough analogue of the weekly + session quota shown above.
+#
+# ccusage parses the local logs (~2s) — too slow for the render path — so it is
+# seeded synchronously only when there is no cache yet (or it is a day stale),
+# and otherwise refreshed in the background while the cached value is displayed.
+# If ccusage is unavailable, the month segment is simply omitted.
+if [ -z "$PACING" ] && [ "$(echo "$input" | jq -r 'if .rate_limits then 1 else 0 end')" = "0" ]; then
+    MONTH_CACHE="/tmp/claude-statusline-ccusage-month"
+    MONTH_LOCK="/tmp/claude-statusline-ccusage-month.lock"
+    NOW=$(date +%s)
+    AGE=$((NOW - $(stat -f %m "$MONTH_CACHE" 2>/dev/null || echo 0)))
+
+    ccusage_month() {
+        local cc="ccusage"
+        command -v ccusage >/dev/null 2>&1 || cc="npx --yes ccusage"
+        $cc monthly --json 2>/dev/null | jq -r --arg m "$(date +%Y-%m)" \
+            '(.monthly[] | select(.period == $m) | .totalCost) // empty' 2>/dev/null
+    }
+
+    if [ ! -f "$MONTH_CACHE" ] || [ "$AGE" -gt 86400 ]; then
+        VAL=$(ccusage_month); printf '%s' "${VAL:-}" > "$MONTH_CACHE"
+    elif [ "$AGE" -gt 900 ]; then
+        [ -d "$MONTH_LOCK" ] && [ $((NOW - $(stat -f %m "$MONTH_LOCK" 2>/dev/null || echo 0))) -gt 300 ] && rmdir "$MONTH_LOCK" 2>/dev/null
+        if mkdir "$MONTH_LOCK" 2>/dev/null; then
+            ( VAL=$(ccusage_month); printf '%s' "${VAL:-}" > "$MONTH_CACHE"; rmdir "$MONTH_LOCK" 2>/dev/null ) >/dev/null 2>&1 &
+        fi
+    fi
+    MONTH_SPEND=$(cat "$MONTH_CACHE" 2>/dev/null)
+
+    SESSION_COST=$(echo "$input" | jq -r '.cost.total_cost_usd // empty')
+
+    if [ -n "$MONTH_SPEND" ]; then
+        MO_FMT=$(printf '%.0f' "$MONTH_SPEND" 2>/dev/null || echo 0)
+        # Optional monthly budget: put a dollar number in ~/.claude/monthly-budget
+        # to show "spend/budget pct%". NOTE: this is GROSS ccusage usage at list
+        # price — it does NOT subtract any prepaid credit balance.
+        BUDGET=$(cat "${HOME:-/Users/$USER}/.claude/monthly-budget" 2>/dev/null | tr -dc '0-9.')
+        if [ -n "$BUDGET" ] && [ "${BUDGET%.*}" -gt 0 ] 2>/dev/null; then
+            BUD_PCT=$(printf '%.0f' "$(echo "$MONTH_SPEND * 100 / $BUDGET" | bc -l 2>/dev/null)" 2>/dev/null || echo 0)
+            if [ "$BUD_PCT" -ge 100 ]; then BUD_COLOR="$RED"
+            elif [ "$BUD_PCT" -ge 80 ]; then BUD_COLOR="$YELLOW"
+            else BUD_COLOR="$GREEN"; fi
+            PACING=" ${DIM}|${RESET} ${BUD_COLOR}\$${MO_FMT}${DIM}/${RESET}${BUD_COLOR}\$${BUDGET%.*} ${BUD_PCT}%${RESET}"
+        else
+            PACING=" ${DIM}|${RESET} ${MAGENTA}\$${MO_FMT}${RESET}${DIM}mo${RESET}"
+        fi
+    fi
+    if [ -n "$SESSION_COST" ]; then
+        S_FMT=$(printf '%.2f' "$SESSION_COST" 2>/dev/null || echo '0.00')
+        if [ -n "$PACING" ]; then
+            PACING="${PACING} ${DIM}·${RESET} ${CYAN}\$${S_FMT}${RESET}${DIM}s${RESET}"
+        else
+            PACING=" ${DIM}|${RESET} ${CYAN}\$${S_FMT}${RESET}${DIM}s${RESET}"
+        fi
+    fi
+fi
+
 # Line 1: model, directory, git
 printf '%b\n' "${CYAN}${MODEL}${RESET} ${SHORT_DIR}${GIT_INFO}"
 
