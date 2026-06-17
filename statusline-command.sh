@@ -122,8 +122,8 @@ fi
 # and otherwise refreshed in the background while the cached value is displayed.
 # If ccusage is unavailable, the month segment is simply omitted.
 if [ -z "$PACING" ] && [ "$(echo "$input" | jq -r 'if .rate_limits then 1 else 0 end')" = "0" ]; then
-    MONTH_CACHE="/tmp/claude-statusline-ccusage-month"
-    MONTH_LOCK="/tmp/claude-statusline-ccusage-month.lock"
+    MONTH_CACHE="${HOME:-/Users/$USER}/.claude/statusline-ccusage-month"
+    MONTH_LOCK="${HOME:-/Users/$USER}/.claude/statusline-ccusage-month.lock"
     NOW=$(date +%s)
     AGE=$((NOW - $(stat -f %m "$MONTH_CACHE" 2>/dev/null || echo 0)))
 
