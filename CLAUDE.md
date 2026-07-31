@@ -2,6 +2,11 @@
 
 General-purpose engineering principles. Project-specific CLAUDE.md files add to or override these.
 
+## Output Style
+
+- **Always use an en dash (–), never an em dash (—)** in all output – prose, chat messages, code comments, and report text alike. Wherever an em dash would conventionally mark a parenthetical break or a range, use an en dash instead.
+- **Never hard-wrap Markdown or prose.** Write one line per paragraph and let the editor/renderer soft-wrap – no manual line breaks in the middle of a paragraph, in files or in messages. (The only exception is a platform-specific report format that genuinely requires hard breaks, and only where a project-level rule explicitly says so.)
+
 ## Skills
 
 Skills live at `~/.claude/skills/<topic>/index.md`. When working on a task that matches a skill topic, read the relevant `index.md` then `{topic}.md` for detailed guidance — don't ask, just load it.
