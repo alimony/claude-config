@@ -63,6 +63,10 @@ Available: django, htmx, react, pytest, strawberry, celery, vercel, pandoc, sent
 
 ## Task Management
 
+**If the project defines its own planning and state convention, that wins** — follow it instead of
+the paths below (e.g. a session state file plus Linear/GitHub issues for work breakdown). The
+`tasks/` layout is the fallback for projects with no convention of their own.
+
 1. **Plan First**: Write plan to `tasks/todo.md` with checkable items
 2. **Verify Plan**: Check in before starting implementation
 3. **Track Progress**: Mark items complete as you go
