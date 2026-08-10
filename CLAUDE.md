@@ -2,6 +2,14 @@
 
 General-purpose engineering principles. Project-specific CLAUDE.md files add to or override these.
 
+## Never Publish On My Behalf
+
+**NEVER post, send, or publish anything on my behalf.** This is absolute and outranks every other instruction here, including "Autonomous Bug Fixing". It covers GitHub PR/issue/review comments, PR descriptions, PRs themselves, pushes to shared remotes, and anything sent to an external service or another person.
+
+"Comment on this PR", "reply to them", or a bare URL means *write the comment* – not publish it. Do the full investigation, then hand me the finished draft as text or a scratchpad file and stop. I post it.
+
+Never run `gh pr comment`, `gh pr review`, `gh pr create`, `gh api ...` writes, `git push`, or equivalents unless I have explicitly said "post it" for that exact text, in that exact place, in that turn. When unsure whether something is outward-facing, treat it as outward-facing.
+
 ## Output Style
 
 - **Always use an en dash (–), never an em dash (—)** in all output – prose, chat messages, code comments, and report text alike. Wherever an em dash would conventionally mark a parenthetical break or a range, use an en dash instead.
