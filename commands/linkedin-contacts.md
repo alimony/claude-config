@@ -31,9 +31,11 @@ The script:
 1. Parses every `linkedin.com/in/<username>/` from the HTML and the most name-like adjacent text (looks at child `<p>` / `<span>` / `<strong>`, `<img alt>`, SVG `aria-label`, then sibling anchors pointing to the same profile, stripping LinkedIn's `'s profile picture` suffix).
 2. For each connection, runs `CNContact.predicateForContactsMatchingName:` to ask Contacts.app for candidates by name — no full address-book enumeration. Punctuation and post-nominals (e.g. ", MOL", " - PhD") are stripped from the search before querying.
 3. Treats a connection as already-known if any returned candidate has a URL or social-profile value containing the LinkedIn username, or matching first+last names case-insensitively.
-4. Writes the missing entries to `~/Downloads/linkedin-missing-YYYY-MM-DD.csv` (override with `--output PATH`).
+4. Writes the missing entries to `~/Downloads/linkedin-missing-YYYY-MM-DD.csv` (override with `--output PATH`), encoded as **Mac Roman** – the encoding Contacts.app assumes when importing a CSV.
 
 CSV columns: `First Name`, `Last Name`, `LinkedIn Username` (the slug only — e.g. `adriano-backes-pilla`, not the full URL).
+
+Mac Roman covers Western European accents (ü, ö, ç, ñ, é) natively. Anything outside it (ł, ș, Cyrillic, CJK) is folded to the closest ASCII form – combining marks stripped, a small transliteration table for letters like `ł → l`, and `?` as a last resort. Each fold is reported on stderr as a `note:` line; relay those to the user, since a folded name may want a manual fix before import.
 
 Relay the script's summary to the user (total parsed, already in Contacts, missing, output path).
 
@@ -47,8 +49,11 @@ Relay the script's summary to the user (total parsed, already in Contacts, missi
 
 **A connection is reported missing but is in Contacts.** Most likely the Contacts entry's name diverges from LinkedIn's display name (nicknames, different transliteration) and has no LinkedIn URL stored. The per-connection name predicate won't find it. Workaround: add the LinkedIn URL to the Contacts entry, or accept the false positive and skip that row at import time.
 
+**Accented names import as mojibake (`BengÃ¼su`).** Contacts.app read the file as something other than Mac Roman. The script writes Mac Roman by default; confirm with `file` / `xxd` that ü is a single `0x9F` byte rather than the two-byte UTF-8 `0xC3 0xBC`. If a CSV was produced with `--encoding utf-8`, re-run without the flag.
+
 **Importing the CSV into Contacts.app.** Contacts.app imports the CSV directly: File → Import (or drag the file onto the app), then map the columns to fields in the dialog it shows. It also reads vCard (.vcf) and LDIF. If a ready-to-import vCard is preferred instead, ask and I'll convert the CSV (one `BEGIN:VCARD … END:VCARD` block per row with `URL;type=LinkedIn:` for the profile).
 
 ## Useful flags
 
 - `--output PATH` — write CSV somewhere other than the default.
+- `--encoding NAME` – override the CSV encoding (default `mac_roman`). Use `utf-8` only when the file is headed somewhere other than Contacts.app; it also disables the ASCII folding, since UTF-8 can represent everything.

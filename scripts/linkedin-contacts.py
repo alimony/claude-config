@@ -23,6 +23,10 @@ Contacts" when any candidate either:
 
 Missing connections are written as CSV with header:
     First Name,Last Name,LinkedIn Username
+
+The CSV is encoded as Mac Roman, which is what Contacts.app assumes when
+importing (UTF-8 imports show mojibake for accented names). Characters Mac
+Roman cannot represent are folded to their closest ASCII form.
 """
 from __future__ import annotations
 
@@ -31,6 +35,7 @@ import csv
 import datetime as _dt
 import re
 import sys
+import unicodedata
 from pathlib import Path
 from typing import NamedTuple
 
@@ -287,14 +292,66 @@ def find_missing(
     return missing
 
 
-def write_csv(missing: list[Connection], path: Path) -> None:
-    with path.open("w", newline="", encoding="utf-8") as f:
+CSV_ENCODING = "mac_roman"
+
+# Letters Mac Roman lacks that NFKD decomposition cannot reduce to an ASCII base.
+_TRANSLITERATIONS = {
+    "Đ": "D", "đ": "d", "Ħ": "H", "ħ": "h", "Ł": "L", "ł": "l",
+    "Ŋ": "N", "ŋ": "n", "Ð": "D", "ð": "d", "Þ": "Th", "þ": "th",
+    "Ŧ": "T", "ŧ": "t", "ı": "i", "ĸ": "k", "ſ": "s",
+}
+
+
+def _encodable(text: str, encoding: str) -> bool:
+    try:
+        text.encode(encoding)
+    except UnicodeEncodeError:
+        return False
+    return True
+
+
+def encode_safe(text: str, encoding: str) -> str:
+    """Fold characters the target encoding cannot represent to their closest form.
+
+    Mac Roman covers Western European accents (ü, ö, ç, ñ) as-is; anything else
+    (ł, ș, Cyrillic, CJK) is stripped of combining marks, transliterated where
+    there is an obvious ASCII equivalent, or replaced with '?'.
+    """
+    if _encodable(text, encoding):
+        return text
+    out: list[str] = []
+    for ch in text:
+        if _encodable(ch, encoding):
+            out.append(ch)
+            continue
+        folded = _TRANSLITERATIONS.get(ch) or "".join(
+            c for c in unicodedata.normalize("NFKD", ch)
+            if not unicodedata.combining(c)
+        )
+        out.append("".join(c if _encodable(c, encoding) else "?" for c in folded) or "?")
+    return "".join(out)
+
+
+def write_csv(
+    missing: list[Connection], path: Path, encoding: str = CSV_ENCODING
+) -> list[tuple[str, str]]:
+    """Write the CSV and return the (original, folded) pairs that had to be changed."""
+    folded: list[tuple[str, str]] = []
+
+    def fold(value: str) -> str:
+        safe = encode_safe(value, encoding)
+        if safe != value:
+            folded.append((value, safe))
+        return safe
+
+    with path.open("w", newline="", encoding=encoding) as f:
         w = csv.writer(f)
         w.writerow(["First Name", "Last Name", "LinkedIn Username"])
         for c in sorted(
             missing, key=lambda x: (x.last.casefold(), x.first.casefold(), x.username)
         ):
-            w.writerow([c.first, c.last, c.username])
+            w.writerow([fold(c.first), fold(c.last), fold(c.username)])
+    return folded
 
 
 def default_output_path() -> Path:
@@ -311,6 +368,8 @@ def main(argv: list[str] | None = None) -> int:
                    help="Saved LinkedIn connections HTML file")
     p.add_argument("--output", type=Path, default=None,
                    help="CSV output path (default: ~/Downloads/linkedin-missing-YYYY-MM-DD.csv)")
+    p.add_argument("--encoding", default=CSV_ENCODING,
+                   help=f"CSV text encoding (default: {CSV_ENCODING}, what Contacts.app expects on import)")
     args = p.parse_args(argv)
 
     if not args.html.exists():
@@ -335,8 +394,11 @@ def main(argv: list[str] | None = None) -> int:
           file=sys.stderr)
 
     output_path = args.output or default_output_path()
-    write_csv(missing, output_path)
-    print(f"Wrote {output_path}")
+    folded = write_csv(missing, output_path, args.encoding)
+    for original, safe in folded:
+        print(f"  note: {original!r} → {safe!r} (not representable in {args.encoding})",
+              file=sys.stderr)
+    print(f"Wrote {output_path} ({args.encoding})")
     return 0
 
 
