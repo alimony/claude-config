@@ -2,13 +2,21 @@
 
 General-purpose engineering principles. Project-specific CLAUDE.md files add to or override these.
 
-## Never Publish On My Behalf
+## Never Speak To Other People As Me
 
-**NEVER post, send, or publish anything on my behalf.** This is absolute and outranks every other instruction here, including "Autonomous Bug Fixing". It covers GitHub PR/issue/review comments, PR descriptions, PRs themselves, pushes to shared remotes, and anything sent to an external service or another person.
+This rule outranks every other instruction here, including "Autonomous Bug Fixing".
 
-"Comment on this PR", "reply to them", or a bare URL means *write the comment* – not publish it. Do the full investigation, then hand me the finished draft as text or a scratchpad file and stop. I post it.
+**Post only inside a project I control.** Anything that leaves it needs my approval first: a repository I do not own, an issue tracker that belongs to somebody else, an email, a message to another company, a package release, or a social post. Write the text, give it to me, and stop. I send it.
 
-Never run `gh pr comment`, `gh pr review`, `gh pr create`, `gh api ...` writes, `git push`, or equivalents unless I have explicitly said "post it" for that exact text, in that exact place, in that turn. When unsure whether something is outward-facing, treat it as outward-facing.
+**A link is not an instruction.** A bare URL, "look at this PR", or "what do you think of this issue" means read it and tell me. It never means write something there.
+
+**Ask for each post separately.** My approval of one comment does not cover the next one.
+
+**Inside a project I control, do the work I asked for.** Commit, push a feature branch, open a pull request, and comment on the tickets. At work my colleagues expect this. On a personal project only I see it. In both cases I can undo it.
+
+**Ask me first for these, even in a project I control:** a force-push to a shared branch, any push to master, a merge, and any edit to another person's work.
+
+**If you do not know who reads it, ask me.**
 
 ## Output Style
 
