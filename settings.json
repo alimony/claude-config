@@ -10,11 +10,20 @@
     "type": "command",
     "command": "bash ~/.claude/statusline-command.sh"
   },
+  "enabledPlugins": {
+    "linear@claude-plugins-official": true,
+    "claude-research@claude-research": true
+  },
+  "extraKnownMarketplaces": {
+    "claude-research": {
+      "source": {
+        "source": "directory",
+        "path": "~/Documents/claude-research"
+      }
+    }
+  },
   "outputStyle": "Concise",
   "awaySummaryEnabled": false,
   "tui": "fullscreen",
-  "skipAutoPermissionPrompt": true,
-  "enabledPlugins": {
-    "linear@claude-plugins-official": true
-  }
+  "skipAutoPermissionPrompt": true
 }
