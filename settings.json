@@ -25,5 +25,7 @@
   "outputStyle": "Concise",
   "awaySummaryEnabled": false,
   "tui": "fullscreen",
+  "remoteControlAtStartup": false,
+  "agentPushNotifEnabled": false,
   "skipAutoPermissionPrompt": true
 }
