@@ -144,12 +144,17 @@ if [ -z "$PACING" ] && [ "$(echo "$input" | jq -r 'if .rate_limits then 1 else 0
     NOW=$(date +%s)
 
     # Calendar progress through the month, for the pacing marker. The spend
-    # window carries no reset timestamp in the response, so we use the calendar
-    # month — which is how the monthly limit is described. Deriving the end from
-    # the next 1st keeps a DST month exact.
-    MONTH_1ST="$(date +%Y-%m-01) 00:00:00"
-    MONTH_START=$(date -j -f '%Y-%m-%d %H:%M:%S' "$MONTH_1ST" +%s 2>/dev/null)
-    MONTH_END=$(date -j -v+1m -f '%Y-%m-%d %H:%M:%S' "$MONTH_1ST" +%s 2>/dev/null)
+    # window carries no reset timestamp in the response, but the limit resets at
+    # 00:00 UTC on the 1st: the usage panel's reset time is that same instant
+    # shown in local time (e.g. "Sep 30 5:00 PM MST" is Oct 1 00:00 UTC), so we
+    # compute the month in UTC. Local time is wrong for a UTC-behind user near
+    # the boundary – on the last local day the window has already rolled over in
+    # UTC, yet local still reads "this month", giving a bogus ~99% elapsed and a
+    # nonsense marker. Deriving the end from the next 1st keeps month lengths
+    # exact; UTC sidesteps DST entirely.
+    MONTH_1ST="$(date -u +%Y-%m-01)T00:00:00Z"
+    MONTH_START=$(date -j -u -f '%Y-%m-%dT%H:%M:%SZ' "$MONTH_1ST" +%s 2>/dev/null)
+    MONTH_END=$(date -j -u -v+1m -f '%Y-%m-%dT%H:%M:%SZ' "$MONTH_1ST" +%s 2>/dev/null)
     MONTH_CAL_PCT=""
     [ -n "$MONTH_START" ] && [ -n "$MONTH_END" ] && [ "$MONTH_END" -gt "$MONTH_START" ] 2>/dev/null && \
         MONTH_CAL_PCT=$(( (NOW - MONTH_START) * 100 / (MONTH_END - MONTH_START) ))
