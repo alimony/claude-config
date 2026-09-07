@@ -1,6 +1,6 @@
 {
   "env": {
-    "ANTHROPIC_MODEL": "claude-opus-4-8",
+    "ANTHROPIC_MODEL": "opus",
     "CLAUDE_CODE_EFFORT_LEVEL": "max"
   },
   "permissions": {
@@ -27,5 +27,6 @@
   "tui": "fullscreen",
   "remoteControlAtStartup": false,
   "agentPushNotifEnabled": false,
-  "skipAutoPermissionPrompt": true
+  "skipAutoPermissionPrompt": true,
+  "feedbackDrafts": "off"
 }
