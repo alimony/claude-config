@@ -23,10 +23,16 @@
     }
   },
   "outputStyle": "Concise",
+  "feedbackDrafts": "off",
+  "modelSettings": {
+    "claude-opus-5-5": {
+      "effortLevel": "high"
+    }
+  },
   "awaySummaryEnabled": false,
   "tui": "fullscreen",
+  "switchModelsOnFlag": false,
   "remoteControlAtStartup": false,
   "agentPushNotifEnabled": false,
-  "skipAutoPermissionPrompt": true,
-  "feedbackDrafts": "off"
+  "skipAutoPermissionPrompt": true
 }
