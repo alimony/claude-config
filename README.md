@@ -10,7 +10,7 @@ Version-controlled [Claude Code](https://docs.anthropic.com/en/docs/claude-code)
 | `settings.json` | Claude Code settings: model, effort level, statusline config |
 | `statusline-command.sh` | Custom statusline showing model, directory, git state, context usage, token counts, and weekly quota pacing |
 | `commands/` | Slash commands (e.g. `/i-know-kung-fu` to generate skills from docs sites) |
-| `skills/` | Documentation-derived skill files for Django, htmx, React, pytest, Strawberry, Celery, Vercel, Pandoc, Sentry, HackerOne, Linearis, Next.js, and Wrangler |
+| `skills/` | Documentation-derived skill files for Django, htmx, React, pytest, Strawberry, Celery, Vercel, Pandoc, Sentry, HackerOne, Linearis, Next.js, and Wrangler, plus `test-suite-audit` (`/test-suite-audit`), which audits a project's test suite and writes a prioritised, evidence-backed report |
 | `install.sh` | Installer that symlinks everything into `~/.claude/` |
 
 ## Setup

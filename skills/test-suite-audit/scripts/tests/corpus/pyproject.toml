@@ -1,0 +1,10 @@
+# A tiny project with planted test-suite defects and decoys.
+# The scripts' own tests assert that each planted defect is found and no decoy is flagged.
+[project]
+name = "shop"
+version = "0.0.0"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+python_files = ["test_*.py"]
