@@ -45,6 +45,8 @@ import Contacts  # type: ignore[import-not-found]
 
 IN_URL_RE = re.compile(r"(?:^|/)in/([^/?#\s\"']+)/?", re.IGNORECASE)
 
+PROFILE_SUFFIX_RE = re.compile(r"['‘’][sS]\s+profile(\s+(?:picture|image))?\s*$")
+
 NON_NAME_TOKENS = {
     "view", "connect", "message", "follow", "profile", "linkedin",
     "connection", "connections", "member", "members",
@@ -69,6 +71,16 @@ def clean(text: str | None) -> str:
     if not text:
         return ""
     return re.sub(r"\s+", " ", text).strip()
+
+
+def strip_symbols(text: str) -> str:
+    """Drop the emoji and pictographs some members decorate their names with."""
+    return "".join(
+        ch for ch in text
+        if unicodedata.category(ch) not in {"So", "Cf", "Co", "Me"}
+        and not 0xFE00 <= ord(ch) <= 0xFE0F  # variation selectors
+        and not 0x1F3FB <= ord(ch) <= 0x1F3FF  # skin-tone modifiers
+    )
 
 
 def is_name_like(text: str) -> bool:
@@ -134,18 +146,25 @@ def parse_html(path: Path) -> dict[str, Connection]:
 
         # Strip the trailing "'s profile picture" suffix LinkedIn appends to
         # image alts and accessibility labels (handles straight + curly apostrophes).
+        # What precedes the suffix is the display name verbatim, so it wins over
+        # the heuristics below, which reject lower-case names ("noah barnett").
         cleaned: list[str] = []
+        labelled: list[str] = []
         for c in candidates:
-            stripped = re.sub(
-                r"['‘’][sS]\s+(?:profile(?:\s+picture)?|profile\s+image)\s*$",
-                "",
-                c,
-            ).strip()
-            if stripped and stripped not in cleaned:
+            m = PROFILE_SUFFIX_RE.search(c)
+            stripped = clean(strip_symbols(c[: m.start()] if m else c))
+            if not stripped:
+                continue
+            # Only the picture label counts; "View X's profile" is link text.
+            if m and m.group(1) and stripped not in labelled:
+                labelled.append(stripped)
+            if stripped not in cleaned:
                 cleaned.append(stripped)
         candidates = cleaned
 
-        name = next((c for c in candidates if is_name_like(c)), "")
+        name = labelled[0] if labelled else ""
+        if not name:
+            name = next((c for c in candidates if is_name_like(c)), "")
         if not name:
             plausible = [c for c in candidates if is_plausible_name(c)]
             if plausible:
@@ -161,6 +180,16 @@ def parse_html(path: Path) -> dict[str, Connection]:
         if prev is None or (not prev.raw_name and name):
             results[username] = Connection(username, first, last, name)
     return results
+
+
+def stated_total(path: Path) -> int | None:
+    """The total LinkedIn prints above the list ("738 connections"), if any."""
+    m = re.search(
+        r">\s*(\d[\d,.]*)\s+connections?\s*<",
+        path.read_text(encoding="utf-8", errors="replace"),
+        re.IGNORECASE,
+    )
+    return int(re.sub(r"\D", "", m.group(1))) if m else None
 
 
 def norm(s: str) -> str:
@@ -385,6 +414,13 @@ def main(argv: list[str] | None = None) -> int:
             "Verify the saved page is a connections page (not a login redirect).\n"
         )
         return 3
+    total = stated_total(args.html)
+    if total and len(linkedin) < total:
+        sys.stderr.write(
+            f"  warning: the page lists {total} connections, but only "
+            f"{len(linkedin)} were loaded when it was saved. Scroll to the end "
+            "of the list until no more load, then save the page again.\n"
+        )
 
     print("Querying Contacts.app per connection ...", file=sys.stderr)
     store = ensure_contacts_access()
