@@ -28,24 +28,28 @@ The first run triggers a macOS permission prompt for Contacts access (System Set
 ```
 
 The script:
-1. Parses every `linkedin.com/in/<username>/` from the HTML and the most name-like adjacent text (looks at child `<p>` / `<span>` / `<strong>`, `<img alt>`, SVG `aria-label`, then sibling anchors pointing to the same profile, stripping LinkedIn's `'s profile picture` suffix).
+1. Parses every `linkedin.com/in/<username>/` from the HTML and its display name. The name comes from the profile-picture label (`<img alt>` / SVG `aria-label` ending in `'s profile picture`), which holds it verbatim, even when lower-case. Without that label, the script takes the most name-like adjacent text (child `<p>` / `<span>` / `<strong>`, then sibling anchors pointing to the same profile). Emoji are stripped from names.
 2. For each connection, runs `CNContact.predicateForContactsMatchingName:` to ask Contacts.app for candidates by name — no full address-book enumeration. Punctuation and post-nominals (e.g. ", MOL", " - PhD") are stripped from the search before querying.
 3. Treats a connection as already-known if any returned candidate has a URL or social-profile value containing the LinkedIn username, or matching first+last names case-insensitively.
 4. Writes the missing entries to `~/Downloads/linkedin-missing-YYYY-MM-DD.csv` (override with `--output PATH`), encoded as **Mac Roman** – the encoding Contacts.app assumes when importing a CSV.
+
+If the page header states a larger total (for example, "738 connections") than the HTML contains, the script prints a `warning:` line. LinkedIn loads the list in batches as you scroll, so the page was saved before every batch loaded.
 
 CSV columns: `First Name`, `Last Name`, `LinkedIn Username` (the slug only — e.g. `adriano-backes-pilla`, not the full URL).
 
 Mac Roman covers Western European accents (ü, ö, ç, ñ, é) natively. Anything outside it (ł, ș, Cyrillic, CJK) is folded to the closest ASCII form – combining marks stripped, a small transliteration table for letters like `ł → l`, and `?` as a last resort. Each fold is reported on stderr as a `note:` line; relay those to the user, since a folded name may want a manual fix before import.
 
-Relay the script's summary to the user (total parsed, already in Contacts, missing, output path).
+Relay the script's summary to the user (total parsed, already in Contacts, missing, output path), and any `warning:` line.
 
 ## Troubleshooting
 
 **Zero connections parsed.** Grep the HTML for `/in/` — if there are no hits, the saved file is a login wall or unrendered SPA shell. If there are hits but the script extracts nothing, inspect the structure around those anchors and adjust `parse_html` in `linkedin-contacts.py` (the candidate-gathering loop and `is_name_like` / `is_plausible_name`).
 
+**Fewer connections parsed than the page lists.** The script warns about this. Ask the user to open the connections page, scroll to the end of the list until no more cards load, and save the page again the same way (in Chrome: File → Save Page As → "Webpage, Complete"). Then re-run.
+
 **Contacts query fails with `authorizationStatus` denied or restricted.** Approve Contacts access for the terminal in System Settings → Privacy & Security → Contacts, then retry.
 
-**Names look wrong (split badly, headline included).** The script picks the first name-like candidate per profile. Middle names go into the last-name column (e.g., "John Q Public" → `John` / `Q Public`); fix in the CSV before import or adjust the split in `parse_html`.
+**Names look wrong (split badly, headline included).** The script takes the profile-picture label, or else the first name-like candidate per profile. Middle names go into the last-name column (e.g., "John Q Public" → `John` / `Q Public`); fix in the CSV before import or adjust the split in `parse_html`.
 
 **A connection is reported missing but is in Contacts.** Most likely the Contacts entry's name diverges from LinkedIn's display name (nicknames, different transliteration) and has no LinkedIn URL stored. The per-connection name predicate won't find it. Workaround: add the LinkedIn URL to the Contacts entry, or accept the false positive and skip that row at import time.
 
