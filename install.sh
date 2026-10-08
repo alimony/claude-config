@@ -13,9 +13,7 @@ FILES=(
 
 # Directories to symlink (when they have content)
 DIRS=(
-    "commands"
     "skills"
-    "scripts"
     "agents"
 )
 

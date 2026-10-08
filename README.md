@@ -9,7 +9,6 @@ Version-controlled [Claude Code](https://docs.anthropic.com/en/docs/claude-code)
 | `CLAUDE.md` | Global instructions that apply to all projects — engineering principles, coding standards, and workflow preferences |
 | `settings.json` | Claude Code settings: model, effort level, statusline config |
 | `statusline-command.sh` | Custom statusline showing model, directory, git state, context usage, token counts, and weekly quota pacing |
-| `commands/` | Slash commands (e.g. `/i-know-kung-fu` to generate skills from docs sites) |
 | `skills/` | Documentation-derived skill files for Django, htmx, React, pytest, Strawberry, Celery, Vercel, Pandoc, Sentry, HackerOne, Linearis, Next.js, and Wrangler, plus `test-suite-audit` (`/test-suite-audit`), which audits a project's test suite and writes a prioritised, evidence-backed report |
 | `install.sh` | Installer that symlinks everything into `~/.claude/` |
 
@@ -64,4 +63,7 @@ The quota and pacing segments only appear when the host sends rate-limit data.
 
 ## Slash commands
 
+Each command is a skill folder, `skills/<name>/SKILL.md`, and any script it runs lives inside that folder.
+
 - **`/i-know-kung-fu <docs-url>`** — crawl a documentation site and generate a Claude Code skill from it. Output lands in `skills/<project>/`.
+- **`/linkedin-contacts [connections.html]`** — diff a saved LinkedIn connections page against macOS Contacts and write a CSV of the connections missing from Contacts.

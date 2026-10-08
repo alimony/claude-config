@@ -15,16 +15,14 @@ If no path was given, look in `~/Downloads/` and `~/Desktop/` for `.html`/`.htm`
 
 ## One-time setup
 
-The work is done by a Python script at `~/.claude/scripts/linkedin-contacts.py` (symlinked from this repo via `install.sh`). It uses PEP 723 inline metadata; `uv` fetches `beautifulsoup4` and `pyobjc-framework-Contacts` into a cached venv on first run.
-
-If `~/.claude/scripts/` does not yet exist, run `~/Documents/claude-config/install.sh` once. As a fallback, the script can be invoked at its repo path: `~/Documents/claude-config/scripts/linkedin-contacts.py`.
+The work is done by a Python script bundled with this skill, at `${CLAUDE_SKILL_DIR}/scripts/linkedin-contacts.py`. It uses PEP 723 inline metadata; `uv` fetches `beautifulsoup4` and `pyobjc-framework-Contacts` into a cached venv on first run.
 
 The first run triggers a macOS permission prompt for Contacts access (System Settings → Privacy & Security → Contacts → enable for the terminal). Approving it once is enough.
 
 ## Run
 
 ```bash
-~/.claude/scripts/linkedin-contacts.py "<HTML_PATH>"
+${CLAUDE_SKILL_DIR}/scripts/linkedin-contacts.py "<HTML_PATH>"
 ```
 
 The script:
