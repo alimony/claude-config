@@ -30,7 +30,9 @@ Restart Claude Code after installing to pick up changes.
 
 ## Making changes
 
-Edit the files in this repo, not in `~/.claude/` directly. Since the installer creates symlinks, changes here are picked up immediately (no need to re-run the installer unless you add new files).
+Edit the files in this repo, not in `~/.claude/` directly. Since the installer creates symlinks, changes here are picked up immediately (no need to re-run the installer unless you add a top-level file or folder, such as `agents/`).
+
+`./install.sh --check` prints each link a run would create or change, changes nothing, and exits 1 if there is any.
 
 ## Statusline
 

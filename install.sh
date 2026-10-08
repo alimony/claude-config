@@ -17,11 +17,32 @@ DIRS=(
     "agents"
 )
 
-echo "Installing Claude config from $REPO_DIR"
-echo "Target: $CLAUDE_DIR"
-echo ""
+# --check reports what a run would change, changes nothing, and exits 1 if anything differs
+CHECK=false
+if [ "${1:-}" = "--check" ]; then
+    CHECK=true
+fi
+DRIFT=false
 
-mkdir -p "$CLAUDE_DIR"
+# Progress output, which --check leaves out
+say() {
+    $CHECK || echo "$@"
+}
+
+# A change under ~/.claude, which --check records instead of making
+run() {
+    if $CHECK; then
+        DRIFT=true
+    else
+        "$@"
+    fi
+}
+
+say "Installing Claude config from $REPO_DIR"
+say "Target: $CLAUDE_DIR"
+say ""
+
+$CHECK || mkdir -p "$CLAUDE_DIR"
 
 link_item() {
     local src="$1"
@@ -31,19 +52,19 @@ link_item() {
         local current_target
         current_target="$(readlink "$dest")"
         if [ "$current_target" = "$src" ]; then
-            echo "  ok  $dest (already linked)"
+            say "  ok  $dest (already linked)"
             return
         fi
         echo "  update  $dest (repointing symlink)"
-        rm "$dest"
+        run rm "$dest"
     elif [ -e "$dest" ]; then
         echo "  backup  $dest -> ${dest}.bak"
-        mv "$dest" "${dest}.bak"
+        run mv "$dest" "${dest}.bak"
     else
         echo "  new  $dest"
     fi
 
-    ln -s "$src" "$dest"
+    run ln -s "$src" "$dest"
 }
 
 # Link files
@@ -53,7 +74,7 @@ for file in "${FILES[@]}"; do
     if [ -f "$src" ]; then
         link_item "$src" "$dest"
     else
-        echo "  skip  $file (not in repo)"
+        say "  skip  $file (not in repo)"
     fi
 done
 
@@ -65,6 +86,12 @@ for dir in "${DIRS[@]}"; do
         link_item "$src" "$dest"
     fi
 done
+
+if $CHECK; then
+    $DRIFT || exit 0
+    echo "Run $REPO_DIR/install.sh to make these changes, then restart Claude Code."
+    exit 1
+fi
 
 echo ""
 echo "Done. Restart Claude Code to pick up changes."
