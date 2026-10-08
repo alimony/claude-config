@@ -12,7 +12,7 @@ This rule outranks every other instruction here, including "Autonomous Bug Fixin
 
 **Ask for each post separately.** My approval of one comment does not cover the next one.
 
-**Inside a project I control, do the work I asked for.** Commit, push a feature branch, open a pull request, and comment on the tickets. At work my colleagues expect this. On a personal project only I see it. In both cases I can undo it.
+**Inside a project I control, do the work I asked for.** Commit, push a feature branch, open a pull request, and comment on the tickets. At work my colleagues expect this. On a personal project only I see it. In both cases I can undo it. A batch of prose comments posted as me is the exception: draft them all, and get my sign-off on each before you post it.
 
 **Ask me first for these, even in a project I control:** a force-push to a shared branch, any push to master, a merge, and any edit to another person's work.
 
