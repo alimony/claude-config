@@ -106,7 +106,7 @@ Available: django, htmx, react, pytest, strawberry, celery, vercel, pandoc, sent
 
 ### 3. Self-Improvement Loop
 
-- After a correction that would apply in later sessions too, record the pattern where the project keeps its lessons – CLAUDE.md, or the project's own convention if it has one (e.g. a skill under `.claude/skills/<topic>/`); `tasks/lessons.md` is the fallback for projects with no convention of their own. Skip one-off slips.
+- After a correction that would apply in later sessions too, record the pattern where the project keeps its lessons – CLAUDE.md, or the project's own convention if it has one (e.g. a skill under `.claude/skills/<topic>/`); `tasks/lessons.md` is the fallback for projects with no convention of their own. Record it there, not in auto memory. Skip one-off slips.
 - Write rules for yourself that prevent the same mistake
 - Review lessons at session start for relevant project
 
@@ -128,7 +128,7 @@ the paths below (e.g. a session state file plus Linear/GitHub issues for work br
 `tasks/` layout is the fallback for projects with no convention of their own.
 
 1. **Plan First**: Write plan to `tasks/todo.md` with checkable items
-2. **Verify Plan**: Check in before starting implementation
+2. **Verify Plan**: Check in before starting implementation, except for bug fixes
 3. **Track Progress**: Mark items complete as you go
 4. **Explain Changes**: Summarize what changed once, when the work is done
 5. **Document Results**: Add review section to `tasks/todo.md`
