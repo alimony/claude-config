@@ -6,7 +6,7 @@ Version-controlled [Claude Code](https://docs.anthropic.com/en/docs/claude-code)
 
 | Path | Purpose |
 |---|---|
-| `CLAUDE.md` | Global instructions that apply to all projects — engineering principles, coding standards, and workflow preferences |
+| `CLAUDE.md` | Global instructions that apply to all projects – engineering principles, coding standards, and workflow preferences |
 | `settings.json` | Claude Code settings: permission rules (allow, ask, deny), a `SessionStart` hook that runs the link check, model, effort level, plugins, and statusline config |
 | `statusline-command.sh` | Custom statusline showing model, directory, git state, context usage, token counts, and weekly quota pacing |
 | `skills/` | Documentation-derived skill files for Django, htmx, React, pytest, Strawberry, Celery, Vercel, Pandoc, Sentry, HackerOne, Linearis, Next.js, Wrangler, Reason, Letterboxd, TMDB, Virtuous CRM+, and Headroom, plus `sentry-cli`, a guide to the Sentry command-line tool, and `test-suite-audit` (`/test-suite-audit`), which audits a project's test suite and writes a prioritised, evidence-backed report |
@@ -43,23 +43,23 @@ Claude Opus 4.7  ~/my-project on main +1~2?3
 ██████░░░░ 58% | 45.2K in 12.1K out | 42%w △5 · 18%s
 ```
 
-**Line 1 — model, directory, git:**
+**Line 1 – model, directory, git:**
 - Model display name
 - Working directory (with `$HOME` abbreviated to `~`)
 - Git branch, plus file status: `+N` staged (green), `~N` modified (yellow), `?N` untracked (red)
 - Git state is cached for 5 seconds in `/tmp/claude-statusline-git-cache` to keep the statusline snappy in large repos
 
-**Line 2 — context and quota:**
+**Line 2 – context and quota:**
 - Context-window usage bar + percentage (green < 70%, yellow < 90%, red ≥ 90%)
 - Input / output token counts formatted as `K` / `M`
-- `N%w` — weekly quota used (same color thresholds as context bar)
-- Pacing indicator — delta between weekly usage % and calendar % of the week elapsed:
+- `N%w` – weekly quota used (same color thresholds as context bar)
+- Pacing indicator – delta between weekly usage % and calendar % of the week elapsed:
   - `▲N` red: over-pacing by ≥ 10 points (burning faster than time)
   - `△N` yellow: over-pacing by 3–9 points
   - `•N` dim: on track (within ±2 points)
   - `▽N` cyan: under-pacing by 3–9 points (banking)
   - `▼N` green: under-pacing by ≥ 10 points
-- `N%s` — current 5-hour session quota used
+- `N%s` – current 5-hour session quota used
 
 The quota and pacing segments only appear when the host sends rate-limit data.
 
