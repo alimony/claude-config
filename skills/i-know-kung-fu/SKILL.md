@@ -100,7 +100,7 @@ mkdir -p /tmp/claude-skills-{project}
 
 ### 3.1 Launch Parallel Agents
 
-For each topic group, launch a background `general-purpose` agent using the Agent tool. **Launch as many as possible in parallel** (6-10 agents at a time).
+For each topic group, launch a background `general-purpose` agent using the Agent tool. Launch them in parallel, 6–10 at a time.
 
 Each agent receives:
 - The list of URLs to read for its topic
@@ -121,7 +121,7 @@ Read each of these URLs using WebFetch and synthesize them into a single, practi
 URLs to read:
 {url_list}
 
-IMPORTANT: Write the file to the STAGING directory, not the final location.
+Write the file to the staging directory, not the final location.
 Create the skill file at: /tmp/claude-skills-{project}/{topic}.md
 
 Start the file with a header like: `# {Project Name}: {Topic Title}`
