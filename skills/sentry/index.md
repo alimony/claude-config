@@ -15,7 +15,7 @@ Generated from https://docs.sentry.io on 2026-03-09.
 | [tracing-performance](./tracing-performance.md) | Spans, custom instrumentation, automatic instrumentation, trace propagation, OpenTelemetry, profiling | 450 |
 | [issues-alerts](./issues-alerts.md) | Issue triage, priority, grouping, ownership rules, alerts, dashboards, AI features | 291 |
 | [crons-releases](./crons-releases.md) | Cron monitoring, uptime checks, release tracking, deploy markers, release health, user feedback | 351 |
-| [cli](./cli.md) | CLI installation, auth, release management, source maps, debug files, sending events, cron wrapping | 448 |
+| [cli](./cli.md) | The `sentry-cli` binary: installation, auth, release management, source maps, debug files, sending events, cron wrapping (for the newer `sentry` binary, see the `sentry-cli` skill) | 450 |
 | [data-management](./data-management.md) | PII scrubbing, sensitive data, data retention, security, quotas, rate limiting | 357 |
 | [integrations](./integrations.md) | GitHub, GitLab, Slack, PagerDuty, Jira, Linear, Vercel, SSO, teams, permissions | 255 |
 | [ai-monitoring](./ai-monitoring.md) | AI agent monitoring, MCP server, agent skills, LLM call tracking, token costs, privacy | 417 |

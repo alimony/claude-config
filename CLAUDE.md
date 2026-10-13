@@ -14,7 +14,7 @@ This rule outranks every other instruction here, including "Autonomous Bug Fixin
 
 **Inside a project I control, do the work I asked for.** Commit, push a feature branch, open a pull request, and comment on the tickets. At work my colleagues expect this. On a personal project only I see it. In both cases I can undo it. A batch of prose comments posted as me is the exception: draft them all, and get my sign-off on each before you post it.
 
-**Ask me first for these, even in a project I control:** a force-push to a shared branch, any push to master, a merge, and any edit to another person's work.
+**Ask me first for these, even in a project I control:** a force-push to a shared branch, any push to the default branch (`main` or `master`), a merge, and any edit to another person's work.
 
 **If you do not know who reads it, ask me.**
 
@@ -87,73 +87,53 @@ Apply no standard here. Do not shorten sentences, remove repetition, flatten voi
 
 ## Skills
 
-Skills live at `~/.claude/skills/<topic>/index.md`. When working on a task that matches a skill topic, read the relevant `index.md` then `{topic}.md` for detailed guidance — don't ask, just load it.
+Skills live at `~/.claude/skills/<topic>/index.md`. When working on a task that matches a skill topic, read the relevant `index.md`, then the file it lists for your task. Load them without asking.
 
 Available: django, htmx, react, pytest, strawberry, celery, vercel, pandoc, sentry, hackerone, linearis, nextjs, wrangler, reason, letterboxd, tmdb, virtuous, headroom
 
 ## Workflow Orchestration
 
-### 1. Plan Mode Default
+### 1. Planning
 
-- Enter plan mode for ANY non-trivial task (3+ steps or architectural decisions)
-- If something goes sideways, STOP and re-plan immediately — don't keep pushing
-- Use plan mode for verification steps, not just building
-- Write detailed specs upfront to reduce ambiguity
-- Once the plan is solid, switch to auto-accept edits — Claude can usually one-shot it
+- If an approach stops working, stop and re-plan instead of pushing on.
 
 ### 2. Subagent Strategy
 
-- Use subagents liberally to keep main context window clean
-- Offload research, exploration, and parallel analysis to subagents
-- For complex problems, throw more compute at it via subagents
+- Use a subagent for wide, independent work – a multi-file investigation or parallel research – where it keeps the main context clean. Do the work yourself when a few reads, searches, or edits would finish it.
 - One task per subagent for focused execution
 - When working in parallel, only one agent should edit a given file at a time
 - For fully parallel workstreams, use git worktrees
 
 ### 3. Self-Improvement Loop
 
-- After ANY correction from the user: record the pattern where the project keeps its lessons — CLAUDE.md, or the project's own convention if it has one (e.g. a skill under `.claude/skills/<topic>/`); `tasks/lessons.md` is the fallback for projects with no convention of their own
+- After a correction that would apply in later sessions too, record the pattern where the project keeps its lessons – CLAUDE.md, or the project's own convention if it has one (e.g. a skill under `.claude/skills/<topic>/`); `tasks/lessons.md` is the fallback for projects with no convention of their own. Record it there, not in auto memory. Skip one-off slips.
 - Write rules for yourself that prevent the same mistake
-- Ruthlessly iterate on these lessons until mistake rate drops
 - Review lessons at session start for relevant project
 
 ### 4. Verification Before Done
 
-- Never mark a task complete without proving it works
-- Diff behavior between main and your changes when relevant
-- Ask yourself: "Would a staff engineer approve this?"
-- Run tests, check logs, demonstrate correctness
-- Give Claude a way to verify its work — this 2-3x the quality of the final result
+- Report a task as done only when it works, and say how you checked it.
 
-### 5. Demand Elegance (Balanced)
-
-- For non-trivial changes: pause and ask "is there a more elegant way?"
-- If a fix feels hacky: "Knowing everything I know now, implement the elegant solution"
-- Skip this for simple, obvious fixes — don't over-engineer
-- Challenge your own work before presenting it
-
-### 6. Autonomous Bug Fixing
+### 5. Autonomous Bug Fixing
 
 - When given a bug report: just fix it. Don't ask for hand-holding
-- Point at logs, errors, failing tests — then resolve them
+- Point at logs, errors, failing tests – then resolve them
 - Zero context switching required from the user
 - Go fix failing CI tests without being told how
 
 ## Task Management
 
-**If the project defines its own planning and state convention, that wins** — follow it instead of
-the paths below (e.g. a session state file plus Linear/GitHub issues for work breakdown). The
-`tasks/` layout is the fallback for projects with no convention of their own.
+**If the project defines its own planning and state convention, that wins** – follow it instead of the paths below (e.g. a session state file plus Linear/GitHub issues for work breakdown). The `tasks/` layout is the fallback for projects with no convention of their own.
 
 1. **Plan First**: Write plan to `tasks/todo.md` with checkable items
-2. **Verify Plan**: Check in before starting implementation
+2. **Verify Plan**: Check in before starting implementation, except for bug fixes
 3. **Track Progress**: Mark items complete as you go
-4. **Explain Changes**: High-level summary at each step
+4. **Explain Changes**: Summarize what changed once, when the work is done
 5. **Document Results**: Add review section to `tasks/todo.md`
-6. **Capture Lessons**: Update `tasks/lessons.md` after corrections
+6. **Capture Lessons**: Update `tasks/lessons.md` after a correction that would apply in later sessions too
 
 ## Core Principles
 
-- **Simplicity First**: Make every change as simple as possible. Impact minimal code.
-- **No Laziness**: Find root causes. No temporary fixes. Senior developer standards.
-- **Minimal Impact**: Changes should only touch what's necessary. Avoid introducing bugs.
+- **Simplicity First**: Make every change as simple as possible.
+- **Root Causes**: Fix the root cause, not the symptom. No temporary fixes.
+- **Minimal Impact**: Change only what the task needs.
