@@ -26,11 +26,11 @@ Generated from https://docs.djangoproject.com/en/6.0/ on 2026-02-20.
 
 Reference individual skills in your project's CLAUDE.md:
 
-    @~/.claude/skills/django-6.0/models-fields.md
+    @~/.claude/skills/django/models-fields.md
 
 Or reference this index to see all available skills:
 
-    @~/.claude/skills/django-6.0/index.md
+    @~/.claude/skills/django/index.md
 
 ## Coverage
 
