@@ -87,7 +87,7 @@ Apply no standard here. Do not shorten sentences, remove repetition, flatten voi
 
 ## Skills
 
-Skills live at `~/.claude/skills/<topic>/index.md`. When working on a task that matches a skill topic, read the relevant `index.md` then `{topic}.md` for detailed guidance — don't ask, just load it.
+Skills live at `~/.claude/skills/<topic>/index.md`. When working on a task that matches a skill topic, read the relevant `index.md`, then the file it lists for your task. Load them without asking.
 
 Available: django, htmx, react, pytest, strawberry, celery, vercel, pandoc, sentry, hackerone, linearis, nextjs, wrangler, reason, letterboxd, tmdb, virtuous, headroom
 
@@ -117,15 +117,13 @@ Available: django, htmx, react, pytest, strawberry, celery, vercel, pandoc, sent
 ### 5. Autonomous Bug Fixing
 
 - When given a bug report: just fix it. Don't ask for hand-holding
-- Point at logs, errors, failing tests — then resolve them
+- Point at logs, errors, failing tests – then resolve them
 - Zero context switching required from the user
 - Go fix failing CI tests without being told how
 
 ## Task Management
 
-**If the project defines its own planning and state convention, that wins** — follow it instead of
-the paths below (e.g. a session state file plus Linear/GitHub issues for work breakdown). The
-`tasks/` layout is the fallback for projects with no convention of their own.
+**If the project defines its own planning and state convention, that wins** – follow it instead of the paths below (e.g. a session state file plus Linear/GitHub issues for work breakdown). The `tasks/` layout is the fallback for projects with no convention of their own.
 
 1. **Plan First**: Write plan to `tasks/todo.md` with checkable items
 2. **Verify Plan**: Check in before starting implementation, except for bug fixes
