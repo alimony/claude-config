@@ -301,12 +301,16 @@
       "mcp__claude_ai_Datadog__execute_datadog_workflow"
     ]
   },
+  "skillOverrides": {
+    "sentry-cli": "off"
+  },
   "statusLine": {
     "type": "command",
     "command": "bash ~/.claude/statusline-command.sh"
   },
   "enabledPlugins": {
-    "claude-research@claude-research": true
+    "linear@claude-plugins-official": true,
+    "research-library@claude-research": true
   },
   "extraKnownMarketplaces": {
     "claude-research": {
