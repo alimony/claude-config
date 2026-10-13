@@ -91,6 +91,14 @@ Skills live at `~/.claude/skills/<topic>/index.md`. When working on a task that 
 
 Available: django, htmx, react, pytest, strawberry, celery, vercel, pandoc, sentry, hackerone, linearis, nextjs, wrangler, reason, letterboxd, tmdb, virtuous, headroom
 
+## Compressed tool output
+
+Tool output may pass through a local Headroom proxy that shortens it. It can cut content from Bash output, but it keeps current Read, Grep and Edit output intact.
+
+- When the exact content of a file matters, read it with Read, not with `cat`, `sed` or `head` through Bash.
+- `[↑NL same as msg M: '…']` replaces N lines that appear earlier in the conversation. Find them there by the quoted first line. A `+dL` or `-dL` after M means their line numbers moved by d.
+- `<<ccr:…>>`, `Retrieve more: hash=…` and `Retrieve original: hash=…` mark removed content. Before you rely on it, call `headroom_retrieve` with the hash as the only tool call in that turn, because the proxy answers a retrieval only when it is alone. If retrieval fails, re-run the original command.
+
 ## Workflow Orchestration
 
 ### 1. Planning
