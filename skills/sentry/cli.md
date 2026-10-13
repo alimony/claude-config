@@ -1,6 +1,8 @@
 # Sentry: CLI
 Based on Sentry documentation (docs.sentry.io).
 
+This file covers the `sentry-cli` binary (npm `@sentry/cli`). The newer `sentry` binary does some of the same jobs with different commands (for example `sentry sourcemap upload`) and has its own skill, `~/.claude/skills/sentry-cli/SKILL.md`. Use the binary the project's scripts or CI already call. Otherwise, check which one is installed with `command -v sentry-cli sentry`.
+
 ## Installation
 
 **curl (macOS/Linux):**
