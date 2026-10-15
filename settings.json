@@ -3,6 +3,9 @@
     "ANTHROPIC_MODEL": "opus"
   },
   "effortLevel": "high",
+  "modelSettings": {
+    "opus": { "effortLevel": "high" }
+  },
   "permissions": {
     "defaultMode": "auto",
     "allow": [
