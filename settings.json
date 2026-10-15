@@ -1,8 +1,8 @@
 {
   "env": {
-    "ANTHROPIC_MODEL": "opus",
-    "CLAUDE_CODE_EFFORT_LEVEL": "high"
+    "ANTHROPIC_MODEL": "opus"
   },
+  "effortLevel": "high",
   "permissions": {
     "defaultMode": "auto",
     "allow": [
