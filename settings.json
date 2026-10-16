@@ -1,7 +1,5 @@
 {
-  "env": {
-    "ANTHROPIC_MODEL": "opus"
-  },
+  "model": "opus",
   "effortLevel": "high",
   "modelSettings": {
     "opus": { "effortLevel": "high" }
