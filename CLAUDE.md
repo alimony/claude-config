@@ -89,7 +89,7 @@ Apply no standard here. Do not shorten sentences, remove repetition, flatten voi
 
 Skills live at `~/.claude/skills/<topic>/index.md`. When working on a task that matches a skill topic, read the relevant `index.md`, then the file it lists for your task. Load them without asking.
 
-Available: django, htmx, react, pytest, strawberry, celery, vercel, pandoc, sentry, hackerone, linearis, nextjs, wrangler, reason, letterboxd, tmdb, virtuous, headroom
+Available: django, htmx, react, pytest, strawberry, celery, vercel, pandoc, sentry, hackerone, linearis, nextjs, wrangler, reason, letterboxd, tmdb, virtuous, headroom, ra
 
 ## Compressed tool output
 
