@@ -2,7 +2,9 @@
 set -euo pipefail
 
 REPO_DIR="$(cd "$(dirname "$0")" && pwd)"
-CLAUDE_DIR="$HOME/.claude"
+MAIN_DIR="$HOME/.claude"
+# A second account runs with CLAUDE_CONFIG_DIR set; install into that dir when it is
+CLAUDE_DIR="${CLAUDE_CONFIG_DIR:-$MAIN_DIR}"
 
 # Files to symlink: source (relative to repo) -> target (relative to ~/.claude/)
 FILES=(
@@ -16,6 +18,24 @@ DIRS=(
     "skills"
     "agents"
 )
+
+# State a second config dir links back to the main one, so sessions, memory,
+# prompt history, and plugins are shared across accounts
+SHARED_DIRS=(
+    "projects"
+    "file-history"
+    "plans"
+    "todos"
+    "tasks"
+    "plugins"
+)
+SHARED_FILES=(
+    "history.jsonl"
+)
+
+# .claude.json keys a second config dir is seeded with: project trust and UI
+# state, but no account, user ID, or cached server data
+SEED_KEYS='["projects", "hasCompletedOnboarding", "lastOnboardingVersion", "lastReleaseNotesSeen", "installMethod", "autoUpdates", "autoUpdatesProtectedForNative", "githubRepoPaths", "copyOnSelect", "optionAsMetaKeyInstalled", "hasUsedBackslashReturn", "hasCompletedClaudeInChromeOnboarding", "claudeInChromeDefaultEnabled", "diffSidebarOpen", "showSpinnerTree", "leftArrowOpensAgents", "lspRecommendationDisabled", "effortCalloutDismissed", "effortCalloutV2Dismissed"]'
 
 # --check reports what a run would change, changes nothing, and exits 1 if anything differs
 CHECK=false
@@ -86,6 +106,30 @@ for dir in "${DIRS[@]}"; do
         link_item "$src" "$dest"
     fi
 done
+
+# Link shared state and seed .claude.json, only for a second config dir
+if [ "$CLAUDE_DIR" != "$MAIN_DIR" ]; then
+    for dir in "${SHARED_DIRS[@]}"; do
+        [ -d "$MAIN_DIR/$dir" ] || run mkdir -p "$MAIN_DIR/$dir"
+        link_item "$MAIN_DIR/$dir" "$CLAUDE_DIR/$dir"
+    done
+    for file in "${SHARED_FILES[@]}"; do
+        [ -f "$MAIN_DIR/$file" ] || run touch "$MAIN_DIR/$file"
+        link_item "$MAIN_DIR/$file" "$CLAUDE_DIR/$file"
+    done
+
+    if [ -e "$CLAUDE_DIR/.claude.json" ]; then
+        say "  ok  $CLAUDE_DIR/.claude.json (exists)"
+    elif [ -f "$HOME/.claude.json" ]; then
+        echo "  seed  $CLAUDE_DIR/.claude.json"
+        if ! $CHECK; then
+            jq --argjson keys "$SEED_KEYS" 'with_entries(select(.key as $k | $keys | index($k)))' \
+                "$HOME/.claude.json" > "$CLAUDE_DIR/.claude.json"
+            chmod 600 "$CLAUDE_DIR/.claude.json"
+        fi
+        DRIFT=true
+    fi
+fi
 
 if $CHECK; then
     $DRIFT || exit 0

@@ -26,6 +26,14 @@ SHORT_DIR=$(echo "$DIR" | sed "s|^${HOME:-/Users/$USER}|~|")
 
 # Git info (cached for performance)
 CACHE_FILE="/tmp/claude-statusline-git-cache"
+
+# Per-account state: a second account runs with CLAUDE_CONFIG_DIR set, and
+# Claude Code then suffixes its Keychain entry with the first 8 hex digits of
+# the dir's SHA-256
+CONFIG_DIR="${CLAUDE_CONFIG_DIR:-${HOME:-/Users/$USER}/.claude}"
+KEYCHAIN_SERVICE="Claude Code-credentials"
+[ -n "${CLAUDE_CONFIG_DIR:-}" ] && \
+    KEYCHAIN_SERVICE="$KEYCHAIN_SERVICE-$(printf '%s' "$CLAUDE_CONFIG_DIR" | shasum -a 256 | cut -c1-8)"
 CACHE_MAX_AGE=5
 
 cache_is_stale() {
@@ -159,15 +167,15 @@ if [ -z "$PACING" ] && [ "$(echo "$input" | jq -r 'if .rate_limits then 1 else 0
     [ -n "$MONTH_START" ] && [ -n "$MONTH_END" ] && [ "$MONTH_END" -gt "$MONTH_START" ] 2>/dev/null && \
         MONTH_CAL_PCT=$(( (NOW - MONTH_START) * 100 / (MONTH_END - MONTH_START) ))
 
-    SPEND_CACHE="${HOME:-/Users/$USER}/.claude/statusline-spend"
-    SPEND_LOCK="${HOME:-/Users/$USER}/.claude/statusline-spend.lock"
+    SPEND_CACHE="$CONFIG_DIR/statusline-spend"
+    SPEND_LOCK="$CONFIG_DIR/statusline-spend.lock"
     SPEND_AGE=$((NOW - $(stat -f %m "$SPEND_CACHE" 2>/dev/null || echo 0)))
 
     # Emits "used|limit|percent" in major units, or nothing. A 401 from a stale
     # token yields nothing, which caches empty and falls through to ccusage.
     fetch_spend() {
         local tok
-        tok=$(security find-generic-password -s "Claude Code-credentials" -w 2>/dev/null | jq -r '.claudeAiOauth.accessToken // empty' 2>/dev/null)
+        tok=$(security find-generic-password -s "$KEYCHAIN_SERVICE" -w 2>/dev/null | jq -r '.claudeAiOauth.accessToken // empty' 2>/dev/null)
         [ -z "$tok" ] && return
         curl -sS --max-time 5 "https://api.anthropic.com/api/oauth/usage" -H "Authorization: Bearer $tok" -H "anthropic-beta: oauth-2025-04-20" -H "Accept: application/json" 2>/dev/null | jq -r '.spend | select(.enabled == true and .used != null and .limit != null) | "\(.used.amount_minor / pow(10; .used.exponent))|\(.limit.amount_minor / pow(10; .limit.exponent))|\(.percent)"' 2>/dev/null
     }
@@ -191,8 +199,8 @@ if [ -z "$PACING" ] && [ "$(echo "$input" | jq -r 'if .rate_limits then 1 else 0
 
     MONTH_SPEND=""
     if [ -z "$SPEND_LINE" ]; then
-        MONTH_CACHE="${HOME:-/Users/$USER}/.claude/statusline-ccusage-month"
-        MONTH_LOCK="${HOME:-/Users/$USER}/.claude/statusline-ccusage-month.lock"
+        MONTH_CACHE="$CONFIG_DIR/statusline-ccusage-month"
+        MONTH_LOCK="$CONFIG_DIR/statusline-ccusage-month.lock"
         AGE=$((NOW - $(stat -f %m "$MONTH_CACHE" 2>/dev/null || echo 0)))
 
         if [ ! -f "$MONTH_CACHE" ] || [ "$AGE" -gt 86400 ]; then
@@ -223,10 +231,10 @@ if [ -z "$PACING" ] && [ "$(echo "$input" | jq -r 'if .rate_limits then 1 else 0
         fi
     elif [ -n "$MONTH_SPEND" ]; then
         MO_FMT=$(printf '%.0f' "$MONTH_SPEND" 2>/dev/null || echo 0)
-        # Optional monthly budget: put a dollar number in ~/.claude/monthly-budget
+        # Optional monthly budget: put a dollar number in $CONFIG_DIR/monthly-budget
         # to show "~spend/budget pct%". NOTE: this is GROSS ccusage usage at list
         # price — it does NOT subtract any prepaid credit balance.
-        BUDGET=$(cat "${HOME:-/Users/$USER}/.claude/monthly-budget" 2>/dev/null | tr -dc '0-9.')
+        BUDGET=$(cat "$CONFIG_DIR/monthly-budget" 2>/dev/null | tr -dc '0-9.')
         if [ -n "$BUDGET" ] && [ "${BUDGET%.*}" -gt 0 ] 2>/dev/null; then
             BUD_PCT=$(printf '%.0f' "$(echo "$MONTH_SPEND * 100 / $BUDGET" | bc -l 2>/dev/null)" 2>/dev/null || echo 0)
             if [ "$BUD_PCT" -ge 100 ]; then BUD_COLOR="$RED"

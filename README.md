@@ -34,6 +34,31 @@ Edit the files in this repo, not in `~/.claude/` directly. Since the installer c
 
 `./install.sh --check` prints each link a run would create or change, changes nothing, and exits 1 if there is any.
 
+## Second account
+
+A second Claude account runs from its own config dir, which Claude Code uses when `CLAUDE_CONFIG_DIR` is set. Login credentials stay separate: Claude Code keeps `.claude.json` inside the config dir, and on macOS it names the Keychain entry after a hash of the dir path.
+
+1. Run the installer against the new dir:
+
+   ```bash
+   CLAUDE_CONFIG_DIR="$HOME/.claude-2" ./install.sh
+   ```
+
+2. Add an alias to your shell profile:
+
+   ```bash
+   alias claude2='CLAUDE_CONFIG_DIR="$HOME/.claude-2" claude'
+   ```
+
+3. Run `claude2` and log in with `/login`.
+
+For a second config dir, the installer does two things beyond linking the repo files:
+
+- It links `projects/` (transcripts and auto memory), `file-history/`, `plans/`, `todos/`, `tasks/`, `plugins/`, and `history.jsonl` back to `~/.claude`. Either account can then resume the other's sessions and use the same memory.
+- If the dir has no `.claude.json`, it creates one from your `~/.claude.json`. It copies project trust and UI state, but never the account, the user ID, or cached server data.
+
+The `SessionStart` hook checks whichever config dir the session runs from, because `install.sh` reads `CLAUDE_CONFIG_DIR`. The status line also reads it, so each account shows its own spend.
+
 ## Statusline
 
 The custom statusline displays two lines:
