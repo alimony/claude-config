@@ -25,7 +25,6 @@ SHARED_DIRS=(
     "projects"
     "file-history"
     "plans"
-    "todos"
     "tasks"
     "plugins"
 )
@@ -110,11 +109,17 @@ done
 # Link shared state and seed .claude.json, only for a second config dir
 if [ "$CLAUDE_DIR" != "$MAIN_DIR" ]; then
     for dir in "${SHARED_DIRS[@]}"; do
-        [ -d "$MAIN_DIR/$dir" ] || run mkdir -p "$MAIN_DIR/$dir"
+        if [ ! -d "$MAIN_DIR/$dir" ]; then
+            echo "  new  $MAIN_DIR/$dir"
+            run mkdir -p "$MAIN_DIR/$dir"
+        fi
         link_item "$MAIN_DIR/$dir" "$CLAUDE_DIR/$dir"
     done
     for file in "${SHARED_FILES[@]}"; do
-        [ -f "$MAIN_DIR/$file" ] || run touch "$MAIN_DIR/$file"
+        if [ ! -f "$MAIN_DIR/$file" ]; then
+            echo "  new  $MAIN_DIR/$file"
+            run touch "$MAIN_DIR/$file"
+        fi
         link_item "$MAIN_DIR/$file" "$CLAUDE_DIR/$file"
     done
 
