@@ -1,11 +1,6 @@
 {
-  "model": "opus",
-  "effortLevel": "high",
-  "modelSettings": {
-    "opus": { "effortLevel": "high" }
-  },
+  "syncClaudeAiSkills": false,
   "permissions": {
-    "defaultMode": "auto",
     "allow": [
       "Bash(python3 *)",
       "Bash(python *)",
@@ -161,6 +156,41 @@
       "Bash(pg_isready *)",
       "Bash(brew services list)"
     ],
+    "deny": [
+      "Read(~/.ssh/**)",
+      "Read(~/.aws/**)",
+      "Read(~/.config/gcloud/**)",
+      "Read(~/.azure/**)",
+      "Read(~/.azd/**)",
+      "Read(~/.kube/**)",
+      "Read(~/.config/gh/**)",
+      "Read(~/.render/**)",
+      "Read(~/.linearis/**)",
+      "Read(~/.sentry/**)",
+      "Read(~/.docker/config.json)",
+      "Read(~/.netrc)",
+      "Read(~/.npmrc)",
+      "Read(~/.yarnrc)",
+      "Read(~/.vstsnpmauthrc)",
+      "Read(~/.nuget/NuGet/NuGet.Config)",
+      "Read(~/.pypirc)",
+      "Read(~/.vite-plugin-mkcert/**)",
+      "Read(~/Library/Application Support/mkcert/**)",
+      "Read(~/.gnupg/**)",
+      "Read(~/.microsoft/usersecrets/**)",
+      "Read(~/.pgadmin/**)",
+      "Read(~/.zsh_history)",
+      "Read(~/.zsh_sessions/**)",
+      "Read(~/.bash_history)",
+      "Read(~/.psql_history)",
+      "Read(~/.pythonhist)",
+      "Read(//**/.env)",
+      "Read(//**/.env.*)",
+      "mcp__claude_ai_Datadog__create_datadog_logpoint",
+      "mcp__claude_ai_Datadog__create_debugger_session",
+      "mcp__claude_ai_Datadog__enable_live_debugger",
+      "mcp__claude_ai_Datadog__execute_datadog_workflow"
+    ],
     "ask": [
       "Bash(npm* -g*)",
       "Bash(npm*--global*)",
@@ -257,70 +287,12 @@
       "ArtifactData(action:batch)",
       "Bash(/usr/bin/sed *-i*)"
     ],
-    "deny": [
-      "Read(~/.ssh/**)",
-      "Read(~/.aws/**)",
-      "Read(~/.config/gcloud/**)",
-      "Read(~/.azure/**)",
-      "Read(~/.azd/**)",
-      "Read(~/.kube/**)",
-      "Read(~/.config/gh/**)",
-      "Read(~/.render/**)",
-      "Read(~/.linearis/**)",
-      "Read(~/.sentry/**)",
-      "Read(~/.docker/config.json)",
-      "Read(~/.netrc)",
-      "Read(~/.npmrc)",
-      "Read(~/.yarnrc)",
-      "Read(~/.vstsnpmauthrc)",
-      "Read(~/.nuget/NuGet/NuGet.Config)",
-      "Read(~/.pypirc)",
-      "Read(~/.vite-plugin-mkcert/**)",
-      "Read(~/Library/Application Support/mkcert/**)",
-      "Read(~/.gnupg/**)",
-      "Read(~/.microsoft/usersecrets/**)",
-      "Read(~/.pgadmin/**)",
-      "Read(~/.zsh_history)",
-      "Read(~/.zsh_sessions/**)",
-      "Read(~/.bash_history)",
-      "Read(~/.psql_history)",
-      "Read(~/.pythonhist)",
-      "Read(//**/.env)",
-      "Read(//**/.env.*)",
-      "mcp__claude_ai_Datadog__create_datadog_logpoint",
-      "mcp__claude_ai_Datadog__create_debugger_session",
-      "mcp__claude_ai_Datadog__enable_live_debugger",
-      "mcp__claude_ai_Datadog__execute_datadog_workflow"
-    ]
+    "defaultMode": "auto"
   },
+  "model": "opus",
   "skillOverrides": {
     "sentry-cli": "off"
   },
-  "statusLine": {
-    "type": "command",
-    "command": "bash ~/.claude/statusline-command.sh"
-  },
-  "enabledPlugins": {
-    "linear@claude-plugins-official": true,
-    "research-library@claude-research": true
-  },
-  "extraKnownMarketplaces": {
-    "claude-research": {
-      "source": {
-        "source": "directory",
-        "path": "~/Documents/claude-research"
-      }
-    }
-  },
-  "outputStyle": "Concise",
-  "feedbackDrafts": "off",
-  "awaySummaryEnabled": false,
-  "tui": "fullscreen",
-  "switchModelsOnFlag": false,
-  "remoteControlAtStartup": false,
-  "agentPushNotifEnabled": false,
-  "skipAutoPermissionPrompt": true,
-  "syncClaudeAiSkills": false,
   "hooks": {
     "SessionStart": [
       {
@@ -332,5 +304,39 @@
         ]
       }
     ]
-  }
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/.claude/statusline-command.sh"
+  },
+  "enabledPlugins": {
+    "linear@claude-plugins-official": true,
+    "research-library@claude-research": true,
+    "claude-security@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {
+    "claude-research": {
+      "source": {
+        "source": "directory",
+        "path": "~/Documents/claude-research"
+      }
+    }
+  },
+  "outputStyle": "Concise",
+  "feedbackDrafts": "off",
+  "effortLevel": "high",
+  "modelSettings": {
+    "opus": {
+      "effortLevel": "high"
+    },
+    "claude-opus-5-5": {
+      "effortLevel": "high"
+    }
+  },
+  "awaySummaryEnabled": false,
+  "tui": "fullscreen",
+  "switchModelsOnFlag": false,
+  "remoteControlAtStartup": false,
+  "agentPushNotifEnabled": false,
+  "skipAutoPermissionPrompt": true
 }
