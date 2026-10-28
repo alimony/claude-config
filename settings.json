@@ -338,5 +338,6 @@
   "switchModelsOnFlag": false,
   "remoteControlAtStartup": false,
   "agentPushNotifEnabled": false,
-  "skipAutoPermissionPrompt": true
+  "skipAutoPermissionPrompt": true,
+  "attribution": false
 }
