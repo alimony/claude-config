@@ -125,17 +125,14 @@ Tool output may pass through a local Headroom proxy that shortens it. It can cut
 
 ### 5. Autonomous Bug Fixing
 
-- When given a bug report: just fix it. Don't ask for hand-holding
-- Point at logs, errors, failing tests – then resolve them
-- Zero context switching required from the user
-- Go fix failing CI tests without being told how
+- When I report a bug, or point you at logs, errors, or failing tests (CI included), find the root cause and fix it without asking me how.
 
 ## Task Management
 
 **If the project defines its own planning and state convention, that wins** – follow it instead of the paths below (e.g. a session state file plus Linear/GitHub issues for work breakdown). The `tasks/` layout is the fallback for projects with no convention of their own.
 
-1. **Plan First**: Write plan to `tasks/todo.md` with checkable items
-2. **Verify Plan**: Check in before starting implementation, except for bug fixes
+1. **Plan First**: For work with several steps or a design decision, write the plan to `tasks/todo.md` with checkable items
+2. **Verify Plan**: Check in on that plan before implementing it, except for bug fixes
 3. **Track Progress**: Mark items complete as you go
 4. **Explain Changes**: Summarize what changed once, when the work is done
 5. **Document Results**: Add review section to `tasks/todo.md`
