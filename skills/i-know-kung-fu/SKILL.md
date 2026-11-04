@@ -129,7 +129,7 @@ On the next line, add: `Based on {Project Name} {version} documentation.`
 
 ## What to Include
 
-The skill file should teach someone HOW TO DO THINGS PROPERLY with this technology. Focus on:
+The skill file should teach someone how to do things properly with this technology. Focus on:
 
 1. **Core Concepts** — What are the key ideas? (brief, not exhaustive)
 2. **How-To Patterns** — The RIGHT way to do common tasks. Show code examples.
@@ -250,7 +250,7 @@ Check `~/.claude/CLAUDE.md` for the existing skills listing (looks like `Availab
 It's better to have 8 excellent skill files than 20 mediocre ones. If a documentation section is thin or not useful for "how to do things", merge it into a broader topic or skip it.
 
 ### Practical Over Theoretical
-Every skill file should help someone WRITE BETTER CODE. If a section of documentation is purely conceptual with no actionable guidance, summarize it briefly rather than expanding it.
+Every skill file should help someone write better code. If a section of documentation is purely conceptual with no actionable guidance, summarize it briefly rather than expanding it.
 
 ### Respect Context Limits
 Each agent can reasonably read ~15-20 documentation pages and synthesize them. If a topic group has more pages, split it into sub-topics (e.g., "django-models-fields" and "django-models-queries" instead of one giant "django-models").
