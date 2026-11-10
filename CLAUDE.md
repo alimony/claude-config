@@ -115,7 +115,7 @@ Tool output may pass through a local Headroom proxy that shortens it. It can cut
 
 ### 3. Self-Improvement Loop
 
-- After a correction that would apply in later sessions too, record the pattern where the project keeps its lessons – CLAUDE.md, or the project's own convention if it has one (e.g. a skill under `.claude/skills/<topic>/`); `tasks/lessons.md` is the fallback for projects with no convention of their own. Record it there, not in auto memory. Skip one-off slips.
+- After a correction that would apply in later sessions too, record the pattern where the project keeps its lessons – CLAUDE.md, or the project's own convention if it has one (e.g. a skill under `.claude/skills/<topic>/`); `tasks/lessons.md` is the fallback for projects with no convention of their own. Record it there. Use auto memory only when that convention names it. Skip one-off slips.
 - Write rules for yourself that prevent the same mistake
 - Review lessons at session start for relevant project
 
