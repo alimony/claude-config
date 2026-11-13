@@ -32,7 +32,7 @@ Restart Claude Code after installing to pick up changes.
 
 Edit the files in this repo, not in `~/.claude/` directly. Since the installer creates symlinks, changes here are picked up immediately (no need to re-run the installer unless you add a top-level file or folder, such as `agents/`).
 
-`./install.sh --check` prints each link a run would create or change, changes nothing, and exits 1 if there is any.
+`./install.sh --check` prints each link a run would create or change, changes no link, and exits 1 if there is any. It does create a missing shared folder in `~/.claude` (such as `tasks` or `plans`) without a report. Claude Code's startup cleanup removes those folders when they are empty, so a missing one is not drift.
 
 ## Second account
 

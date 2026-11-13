@@ -106,18 +106,20 @@ for dir in "${DIRS[@]}"; do
     fi
 done
 
-# Create the shared state in the main dir on every run, so the links of a
-# second config dir never dangle, whichever dir this run targets
+# Create the shared state in the main dir on every run, --check included, so
+# the links of a second config dir never dangle. Claude Code's startup cleanup
+# deletes old files in tasks/ and plans/ and then removes those dirs when they
+# are empty, so a missing one is normal and is not reported as drift.
 for dir in "${SHARED_DIRS[@]}"; do
     if [ ! -d "$MAIN_DIR/$dir" ]; then
-        echo "  new  $MAIN_DIR/$dir"
-        run mkdir -p "$MAIN_DIR/$dir"
+        say "  new  $MAIN_DIR/$dir"
+        mkdir -p "$MAIN_DIR/$dir"
     fi
 done
 for file in "${SHARED_FILES[@]}"; do
     if [ ! -f "$MAIN_DIR/$file" ]; then
-        echo "  new  $MAIN_DIR/$file"
-        run touch "$MAIN_DIR/$file"
+        say "  new  $MAIN_DIR/$file"
+        touch "$MAIN_DIR/$file"
     fi
 done
 
