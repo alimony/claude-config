@@ -106,20 +106,27 @@ for dir in "${DIRS[@]}"; do
     fi
 done
 
+# Create the shared state in the main dir on every run, so the links of a
+# second config dir never dangle, whichever dir this run targets
+for dir in "${SHARED_DIRS[@]}"; do
+    if [ ! -d "$MAIN_DIR/$dir" ]; then
+        echo "  new  $MAIN_DIR/$dir"
+        run mkdir -p "$MAIN_DIR/$dir"
+    fi
+done
+for file in "${SHARED_FILES[@]}"; do
+    if [ ! -f "$MAIN_DIR/$file" ]; then
+        echo "  new  $MAIN_DIR/$file"
+        run touch "$MAIN_DIR/$file"
+    fi
+done
+
 # Link shared state and seed .claude.json, only for a second config dir
 if [ "$CLAUDE_DIR" != "$MAIN_DIR" ]; then
     for dir in "${SHARED_DIRS[@]}"; do
-        if [ ! -d "$MAIN_DIR/$dir" ]; then
-            echo "  new  $MAIN_DIR/$dir"
-            run mkdir -p "$MAIN_DIR/$dir"
-        fi
         link_item "$MAIN_DIR/$dir" "$CLAUDE_DIR/$dir"
     done
     for file in "${SHARED_FILES[@]}"; do
-        if [ ! -f "$MAIN_DIR/$file" ]; then
-            echo "  new  $MAIN_DIR/$file"
-            run touch "$MAIN_DIR/$file"
-        fi
         link_item "$MAIN_DIR/$file" "$CLAUDE_DIR/$file"
     done
 
