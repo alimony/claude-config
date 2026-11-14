@@ -123,4 +123,5 @@ How each was checked:
 - T15: the harness lists `writing-standards` and the skill loads.
 - `settings.json` is valid JSON, the diff held only the intended lines, and `install.sh --check` exits 0 for both config dirs.
 
-Not checked: shellcheck, because the mise shim for it has no version set. A new session will show whether the Headroom section arrives as context.
+- Shellcheck 0.11.0, run with `mise exec shellcheck@0.11.0 --` because mise has no global version set, reports nothing for `statusline-command.sh`, `scripts/headroom-context.sh` and `install.sh`.
+- T13 in a real session: two headless sessions (`claude -p`, Haiku) ran the hook with status 0. Through the proxy, the transcript holds the section body and the model saw the section. Without `ANTHROPIC_BASE_URL`, the transcript holds none of the body and the model did not see it.
