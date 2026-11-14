@@ -7,32 +7,14 @@
   },
   "permissions": {
     "allow": [
-      "Bash(python3 *)",
-      "Bash(python *)",
-      "Bash(bash *)",
-      "Bash(sh *)",
-      "Bash(node *)",
-      "Bash(perl *)",
-      "Bash(poetry *)",
-      "Bash(yarn *)",
-      "Bash(npm *)",
-      "Bash(corepack yarn *)",
-      "Bash(npx *)",
-      "Bash(uvx *)",
       "Bash(dotnet build *)",
       "Bash(dotnet test *)",
-      "Bash(*/bin/python *)",
-      "Bash(*/bin/python3 *)",
-      "Bash(*/bin/bash *)",
-      "Bash(*/bin/sh *)",
       "Bash(*/bin/pytest *)",
       "Bash(*/bin/pip *)",
       "Bash(*/bin/ruff *)",
       "Bash(*/bin/poetry *)",
       "Bash(*/bin/mutmut *)",
       "Bash(*/.bin/vitest *)",
-      "Bash(git fetch *)",
-      "Bash(git pull *)",
       "Bash(git add *)",
       "Bash(git commit *)",
       "Bash(git switch *)",
@@ -64,12 +46,10 @@
       "Bash(gh release list *)",
       "Bash(gh search *)",
       "Bash(gh auth status *)",
-      "Bash(gh api *)",
       "Bash(gh --version)",
       "Bash(gh help *)",
       "WebSearch",
       "WebFetch",
-      "Bash(curl *)",
       "Read(~/**)",
       "Read(//private/tmp/claude-*/**)",
       "Read(//opt/homebrew/**)",
@@ -130,14 +110,12 @@
       "Bash(linear labels list *)",
       "Bash(linear teams list *)",
       "Bash(linear users list *)",
-      "Bash(kill *)",
       "Bash(chmod +x *)",
       "Bash(chmod -x *)",
-      "Bash(tee *)",
-      "Bash(open *)",
       "Skill(test-suite-audit)",
       "Skill(artifact-design)",
       "Skill(claude-in-chrome)",
+      "Skill(writing-standards)",
       "Artifact",
       "ArtifactData",
       "Bash(/usr/bin/grep *)",
@@ -305,6 +283,10 @@
           {
             "type": "command",
             "command": "\"$HOME/Documents/claude-config/install.sh\" --check >/dev/null || echo '{\"systemMessage\": \"~/.claude does not match claude-config. Run ~/Documents/claude-config/install.sh --check to see what differs, then run install.sh without --check and restart Claude Code.\"}'"
+          },
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/scripts/headroom-context.sh\""
           }
         ]
       }
@@ -312,7 +294,8 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "bash ~/.claude/statusline-command.sh"
+    "command": "bash ~/.claude/statusline-command.sh",
+    "refreshInterval": 30
   },
   "enabledPlugins": {
     "linear@claude-plugins-official": true,

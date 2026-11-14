@@ -17,6 +17,7 @@ FILES=(
 DIRS=(
     "skills"
     "agents"
+    "scripts"
 )
 
 # State a second config dir links back to the main one, so sessions, memory,
