@@ -326,5 +326,9 @@
   "switchModelsOnFlag": false,
   "remoteControlAtStartup": false,
   "agentPushNotifEnabled": false,
-  "skipAutoPermissionPrompt": true
+  "skipAutoPermissionPrompt": true,
+  "skipWorkflowUsageWarning": true,
+  "env": {
+    "LINK_CLI_SKIP_SKILL_INSTALL": "1"
+  }
 }
